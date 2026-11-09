@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Become a Legend — Football Life Simulator V7</title>
+<style>
+:root{--bg:#080e19;--panel:#111c2d;--panel2:#17263b;--line:#2a3d58;--txt:#eef4ff;--muted:#9aabc1;--green:#a6f078;--gold:#ffd166;--red:#ff7180;--blue:#70baff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% -10%,#1a3c50 0,transparent 34%),var(--bg);color:var(--txt);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 14px;background:var(--green);color:#10200b;font-weight:800}button:hover{filter:brightness(1.08)}button:disabled{opacity:.4;cursor:not-allowed}.secondary{background:#243750;color:var(--txt);border:1px solid var(--line)}.danger{background:#702b38;color:white}.goldbtn{background:var(--gold);color:#2b2105}
+header{position:sticky;top:0;z-index:5;background:#080e19ed;backdrop-filter:blur(14px);padding:12px 4vw;border-bottom:1px solid var(--line)}.brand{font-weight:950;letter-spacing:.05em;display:flex;align-items:center;gap:10px}.ball{background:var(--green);color:#10200b;border-radius:10px;width:36px;height:36px;display:grid;place-items:center;font-size:20px}
+#hud{display:none;grid-template-columns:repeat(6,minmax(75px,1fr));gap:7px;margin-top:10px}.stat{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:7px 10px}.stat small{display:block;color:var(--muted);font-size:10px}.stat b{font-size:15px}
+main{max-width:1180px;margin:24px auto;padding:0 16px}.hero{padding:24px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(120deg,#142941,#111b2b 65%,#1a352d);margin-bottom:16px}.eyebrow{font-size:11px;color:var(--green);font-weight:900;letter-spacing:.18em}.hero h1{font-size:clamp(30px,5vw,48px);line-height:1.05;margin:7px 0}.hero p,.muted{color:var(--muted)}.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:17px;margin-bottom:15px}.panel h2,.panel h3{margin:0 0 10px}.layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:15px}.fields{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}.field input,.field select{width:100%;padding:10px;border-radius:9px;border:1px solid var(--line);background:#0b1422;color:var(--txt)}.actions,.tabs,.speedrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.tab,.speed{background:#1a2b41;color:var(--muted);border:1px solid var(--line);padding:8px 12px}.tab.active,.speed.active{background:var(--green);color:#10200b;border-color:var(--green)}.hidden{display:none!important}
+.cardplayer{display:grid;grid-template-columns:112px 1fr;gap:12px;align-items:center;background:linear-gradient(135deg,#1a3149,#111c2d);border:1px solid #3b5876;border-radius:15px;padding:12px;margin-bottom:13px}.avatar{width:104px;height:116px;background:#0b1422;border:1px solid #405b75;border-radius:10px;display:grid;place-items:center;overflow:hidden}.avatar canvas{width:100%;height:100%;image-rendering:pixelated}.rating{font-size:36px;line-height:1;font-weight:1000;color:var(--green)}.cardname{font-size:17px;font-weight:900}.positiontag{font-size:11px;color:var(--gold);font-weight:900;letter-spacing:.1em}.stats6{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px}.s6{background:#0c1726;border-radius:7px;padding:5px 7px;text-align:center}.s6 b{display:block;font-size:16px}.s6 small{font-size:9px;color:var(--muted)}
+.bar{height:7px;background:#293b53;border-radius:8px;overflow:hidden;margin:5px 0 10px}.bar span{height:100%;display:block;background:linear-gradient(90deg,#69d99a,var(--green))}
+.event{background:#14253a;border-left:3px solid var(--green);padding:12px;border-radius:0 10px 10px 0;margin:10px 0}.choice{display:flex;width:100%;justify-content:space-between;text-align:left;align-items:center;background:#203a58;border:2px solid #527397;color:#fff;margin:9px 0;padding:14px 16px;min-height:64px;font-size:15px;box-shadow:0 3px 10px #0003}.choice small{color:var(--muted);font-weight:500}.log{max-height:270px;overflow:auto}.log p{border-bottom:1px solid #25364e;padding:7px 0;margin:0;font-size:13px}
+.timeline{height:8px;background:#26374d;border-radius:8px;overflow:hidden;margin:9px 0}.timeline span{display:block;height:100%;background:var(--green);width:0%;transition:width .2s}.matchscore{font-size:24px;font-weight:950;text-align:center;padding:6px}.training-option{background:#15263b;border:1px solid var(--line);border-radius:11px;padding:11px;margin:8px 0}.training-option p{margin:4px 0;color:var(--muted);font-size:12px}
+.pill{display:inline-block;background:#243850;border-radius:99px;padding:3px 8px;font-size:11px;margin:2px;color:#d4e2f4}.modalback{position:fixed;top:0;right:0;bottom:0;left:0;z-index:20;background:#020711df;display:grid;place-items:center;padding:16px}.modalbox{width:min(620px,100%);max-height:90vh;overflow:auto;background:#111c2d;border:1px solid #52708f;border-radius:18px;padding:20px;box-shadow:0 20px 80px #000b}.modalbox h2{margin:5px 0 8px;color:var(--green)}.modalbox .choice{display:block;padding:16px 18px;min-height:74px}.choice b{font-size:16px}.choice small{font-size:13px;line-height:1.45;margin-top:5px}.event{font-size:15px}.panel{padding:19px}.modalbox .choice b,.modalbox .choice small{display:block}.monthtag{color:var(--gold);font-weight:900}.footer{text-align:center;color:#71829b;font-size:12px;padding:20px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}#hud{grid-template-columns:repeat(3,1fr)}.fields{grid-template-columns:1fr}.cardplayer{grid-template-columns:92px 1fr}.avatar{width:86px;height:104px}}
+
+/* V4.1 visual refresh */
+:root{--bg:#070d18;--panel:#101d30;--panel2:#192d45;--line:#35506f;--txt:#f3f7ff;--muted:#a9bad0;--green:#b6ff78;--gold:#ffd778;--blue:#79c5ff}
+body{font-size:16px;background:radial-gradient(ellipse at 12% 0%,#244b62 0,transparent 34%),radial-gradient(ellipse at 95% 20%,#244332 0,transparent 28%),#070d18}
+header{padding:15px 4vw;background:rgba(5,12,23,.92);border-bottom:1px solid #45617e;box-shadow:0 8px 30px #0005}
+.brand{font-size:18px}.ball{width:44px;height:44px;font-size:23px;box-shadow:0 0 22px #a6f07855}
+main{max-width:1380px;margin:30px auto;padding:0 22px}
+.hero{position:relative;overflow:hidden;padding:clamp(28px,5vw,54px);border-radius:24px;background:linear-gradient(115deg,#173957ee,#111d31f2 58%,#1b4938);box-shadow:0 18px 50px #0005}
+.hero:after{content:"⚽";position:absolute;right:5%;top:5%;font-size:clamp(90px,18vw,210px);opacity:.07;transform:rotate(-18deg);pointer-events:none}
+.hero h1{font-size:clamp(38px,6vw,62px);letter-spacing:-.035em}
+.panel{padding:23px;border-radius:19px;background:linear-gradient(145deg,#14243a,#0e192a);box-shadow:0 12px 32px #0003}
+.panel h2{font-size:23px}.panel h3{font-size:19px}
+.field label{font-size:14px;font-weight:750;color:#c1d1e5}
+.field input,.field select{padding:13px 14px;font-size:16px;border-radius:12px;background:#091525;border-color:#405a78}
+button{padding:12px 17px;border-radius:12px;transition:transform .15s,filter .15s,box-shadow .15s}
+button:hover{transform:translateY(-1px);box-shadow:0 7px 18px #0004}
+.tab{padding:11px 16px;font-size:15px;border-radius:12px}
+.tab.active{box-shadow:0 0 0 2px #b6ff7833,0 5px 18px #a6f07822}
+.training-option{padding:16px;border-radius:15px;background:linear-gradient(135deg,#1a3049,#122137);border-color:#38516e}
+.training-option b{font-size:16px}.training-option p{font-size:14px}
+.event{padding:16px;border-radius:0 13px 13px 0;background:linear-gradient(100deg,#19334b,#14253a)}
+.choice{border-radius:14px;padding:17px 19px;min-height:72px;background:linear-gradient(110deg,#25496b,#1b3552);border-color:#547da2}
+.choice:hover{border-color:var(--green)}
+.stat{padding:10px 12px;border-radius:12px;background:linear-gradient(145deg,#172a41,#101c2e)}
+.stat small{font-size:11px}.stat b{font-size:16px}
+.cardplayer{padding:16px;border-radius:18px;background:linear-gradient(135deg,#203f5d,#111e31)}
+.avatar{width:116px;height:128px}.avatar canvas{image-rendering:pixelated}
+.rating{font-size:42px;text-shadow:0 0 20px #a6f07833}
+.s6{padding:8px;border:1px solid #263d58}
+.log{max-height:360px}.log p{font-size:14px;padding:10px 2px;line-height:1.55}
+.pill{font-size:12px;padding:5px 10px}
+.footer{padding:28px}
+@media(max-width:800px){main{padding:0 12px;margin:18px auto}.hero{padding:26px 20px}.panel{padding:17px}.tab{flex:1 1 auto}.cardplayer{grid-template-columns:92px 1fr}.avatar{width:86px;height:104px}}
+
+
+/* V5 matchday + awards visual system */
+:root{--bg:#050b16;--panel:#101f33;--panel2:#172d47;--line:#385575;--txt:#f5f8ff;--muted:#b5c5d9;--green:#b7ff72;--gold:#ffd56a;--blue:#79c5ff}
+body{font-size:16px;background:radial-gradient(ellipse at 50% -20%,#254b68 0,transparent 48%),linear-gradient(160deg,#07111f,#050914 70%)}
+main{max-width:1320px}.panel{background:linear-gradient(145deg,#142943,#0e1a2c);border-color:#385575;box-shadow:0 10px 28px #0005;padding:22px}.hero{box-shadow:0 14px 36px #0006;border-color:#54718d}.field label{font-size:14px;color:#d2e0f1}.field input,.field select{font-size:16px;padding:13px}.stat{padding:10px 12px;background:#12243a}.stat small{font-size:12px}.stat b{font-size:17px}.choice{border-radius:13px;border-color:#5c7fa4;background:linear-gradient(110deg,#203d5c,#172c46);min-height:76px;padding:15px 17px}.choice:hover{border-color:var(--green);transform:translateY(-1px)}.match-panel{border:1px solid #5b7fa3;background:linear-gradient(145deg,#142b45,#0c1728)}.match-head{display:flex;justify-content:space-between;align-items:center}.match-head h3{font-size:21px;margin:4px 0}.matchscore{font-size:42px;color:var(--gold);text-shadow:0 3px 18px #ffcf5b44}.matchscore span{color:#9eb4ca}.match-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}.match-choice{margin:0;gap:12px;min-height:94px}.choice-main{display:flex;flex-direction:column;gap:5px;min-width:0}.choice-main b{font-size:15px}.choice-main small{font-size:12px;line-height:1.4}.chance{flex:0 0 66px;text-align:center;border-radius:12px;padding:7px 4px;background:#253b55;color:#ffd56a;font-size:21px;font-weight:950}.chance small{display:block;color:#c6d4e5;font-size:10px;font-weight:700}.chance.sure{background:#24563b;color:#baff83}.ballon-winner{text-align:center;border:2px solid #e5bd58;background:radial-gradient(circle at 50% 10%,#76521b,#1a2940 58%,#101827);padding:30px;box-shadow:0 0 45px #e7bd4d55}.ballon-winner h2{color:#ffdf83;font-size:clamp(25px,5vw,42px);letter-spacing:.08em}.ballon-winner h1{font-size:clamp(30px,6vw,54px);color:#fff2bd;margin:8px}.ballon-glow{font-size:76px;filter:drop-shadow(0 0 20px #ffd76b)}.log p{font-size:14px;color:#e1ebf7}.pill{font-size:12px;background:#2a4562;color:#f0f6ff}
+@media(max-width:700px){.match-options{grid-template-columns:1fr}.match-choice{min-height:78px}.matchscore{font-size:36px}.panel{padding:16px}}
+
+
+/* V5.2 — Emerald career hub + dedicated award galleries */
+:root{--bg:#06130f;--panel:#0d211a;--panel2:#143328;--line:#285443;--txt:#effaf3;--muted:#a7c4b3;--green:#62e6a1;--gold:#f4c95d;--blue:#82cdb5}
+body{background:radial-gradient(ellipse at 12% -8%,#1b6046 0,transparent 38%),radial-gradient(ellipse at 92% 8%,#173e31 0,transparent 30%),linear-gradient(160deg,#06150f,#030b08 78%);color:var(--txt)}
+header{background:rgba(3,15,10,.94);border-bottom:1px solid #32664e;box-shadow:0 10px 34px #0008}
+.ball{background:linear-gradient(145deg,#8af0b8,#27a66c);color:#052315;box-shadow:0 0 25px #55e49a55}
+.hero{background:linear-gradient(115deg,#164b36f2,#0d241bf5 60%,#123d2b);border-color:#39785a;box-shadow:0 20px 55px #0007}
+.panel{background:linear-gradient(145deg,#123326,#0a1b14);border-color:#2b6047;box-shadow:0 12px 32px #0005}
+.stat,.training-option{background:linear-gradient(145deg,#153a2a,#0d241a);border-color:#2d6048}
+.field input,.field select{background:#071810;border-color:#32644b}
+.tab,.speed{background:#153526;border-color:#2a6045;color:#b8d4c3}
+.tab.active,.speed.active{background:linear-gradient(135deg,#75e9a8,#32b879);color:#062315;border-color:#8cf2b7}
+.choice{background:linear-gradient(110deg,#20543b,#153a2b);border-color:#478363}
+.choice:hover{border-color:#8cf2b7}
+.event{background:linear-gradient(100deg,#17432f,#102b20);border-left-color:#68e5a0}
+.cardplayer{background:linear-gradient(135deg,#1a4934,#0d241a);border-color:#3b7657}
+.rating{color:#82efad}
+.s6{background:#091c13;border-color:#28513d}
+.bar span{background:linear-gradient(90deg,#32b879,#9af2b9)}
+.pill{background:#1d4934;color:#d9f7e5}
+.award-silver{border:1px solid #9eabb8;background:radial-gradient(circle at 50% 0%,#536575,#1a2b35 62%,#0c1b20);box-shadow:0 12px 32px #0006}
+.award-silver h3{color:#e4edf5}
+.award-gold{border:1px solid #d9b34f;background:radial-gradient(circle at 50% 0%,#795b1d,#332811 58%,#15170f);box-shadow:0 0 35px #d9ad3b22}
+.award-gold h3,.award-gold .award-icon{color:#ffe29a}
+.award-icon{font-size:42px;text-align:center}
+.shop-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.shop-section{margin-top:14px}.shop-note{color:var(--muted);font-size:13px}.award-year{display:inline-block;border:1px solid #71899a;border-radius:30px;padding:3px 10px;color:#dce8f1;font-size:12px}
+.award-gold .award-year{border-color:#b8953e;color:#ffe29a}
+.award-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.award-card{border-radius:15px;padding:16px;margin:8px 0}
+@media(max-width:700px){.award-grid{grid-template-columns:1fr}}
+
+/* ===== V7 — readability, emerald pitch polish, FIFA-style cards ===== */
+:root{--txt:#f6fff9;--muted:#c4ddcf;--green:#6df0ae;--gold:#ffd66b}
+body{font-size:17px;line-height:1.6;color:var(--txt)}
+.muted,.hero p{color:var(--muted)}
+::selection{background:#35d58a;color:#04180e}
+*{scrollbar-width:thin;scrollbar-color:#2f7a58 #0a1d15}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #8cf2b7;outline-offset:2px}
+header{padding:12px 4vw}
+#hud{grid-template-columns:repeat(6,minmax(96px,1fr));gap:9px}
+.stat{padding:10px 13px;border-radius:13px;border-color:#3a7a5b;background:linear-gradient(145deg,#194330,#0f2a1d)}
+.stat small{font-size:12px;color:#b7d6c4;letter-spacing:.04em}.stat b{font-size:19px;color:#fff}
+.hero{background:
+ radial-gradient(circle at 82% 50%,transparent 0 62px,rgba(255,255,255,.13) 63px 65px,transparent 66px),
+ linear-gradient(90deg,transparent 0 calc(82% - 1px),rgba(255,255,255,.12) calc(82% - 1px) calc(82% + 1px),transparent calc(82% + 1px)),
+ repeating-linear-gradient(90deg,#14583c 0 70px,#116b46 70px 140px);box-shadow:inset 0 0 0 2px rgba(255,255,255,.08),0 18px 50px #0007}
+.hero h1{text-shadow:0 4px 24px #0009}.hero p{color:#dcf5e6;max-width:640px;font-size:18px}
+.panel{background:linear-gradient(150deg,#133a29,#0a1f16);border-color:#34795a}
+.panel h2{font-size:25px}.panel h3{font-size:20px}
+.eyebrow{color:#7df5b9}
+.field input,.field select{font-size:17px;background:#06140d;color:#fff}
+button{font-size:16px}
+.tabs{gap:7px}.tab{font-size:16px;padding:12px 17px;color:#d6efe0}.tab.active{color:#032012}
+.event{font-size:16.5px;color:#f1fff7;border-left-width:4px}
+.training-option p,.shop-note{color:#c4ddcf;font-size:15px}
+.log p{font-size:15px;color:#f0fbf4;border-bottom-color:#2a5a43}
+.pill{font-size:13px;color:#eafff2;background:#215a3f;border:1px solid #348a62}
+.choice{color:#fff;border-color:#5aa17d;background:linear-gradient(110deg,#1f5a3f,#143b2a)}
+.choice small{color:#cfe9db}
+.modalbox{background:linear-gradient(160deg,#133a29,#0a1d14);border-color:#58b88a}
+.modalbox p{white-space:pre-line}
+.bar{height:10px;background:#20483a}
+.footer{color:#8fb7a2}
+/* match panel: pitch-style header */
+.match-panel{border-color:#6bc597;background:linear-gradient(145deg,#12402c,#0a1c14)}
+.match-head{margin:-2px -2px 8px;padding:12px 14px;border-radius:13px;background:repeating-linear-gradient(90deg,#17673f 0 44px,#145a37 44px 88px);box-shadow:inset 0 0 0 2px rgba(255,255,255,.14)}
+.matchscore{background:#06130d;border:2px solid #3a7a5b;border-radius:14px;margin:8px auto;max-width:240px;padding:4px 14px}
+.chance{background:#1a4a35;color:#ffe08a;border:1px solid #3a7a5b}
+.chance.sure{background:#1f6a45;color:#c7ffa0}
+.match-choice{border-radius:14px}
+/* FIFA-style card */
+.fcard{--c1:#f6d56a;--c2:#a8741a;--ink:#2a1a00;position:relative;overflow:hidden;width:100%;max-width:290px;margin:0 auto;aspect-ratio:3/4.35;border-radius:22px 22px 44px 44px/22px 22px 70px 70px;padding:14px 16px 12px;color:var(--ink);background:radial-gradient(circle at 25% 0%,rgba(255,255,255,.55),transparent 45%),linear-gradient(165deg,var(--c1),var(--c2));box-shadow:0 14px 34px #000a,inset 0 0 0 3px rgba(255,255,255,.35),inset 0 0 0 6px rgba(0,0,0,.12);display:flex;flex-direction:column}
+.fcard.tier-bronze{--c1:#d9a066;--c2:#744520;--ink:#2b1608}
+.fcard.tier-silver{--c1:#e3eaf1;--c2:#7b8896;--ink:#111c26}
+.fcard.tier-gold{--c1:#ffe27a;--c2:#b4801c;--ink:#2d1d00}
+.fcard.tier-emerald{--c1:#8cf8c4;--c2:#0c7a50;--ink:#02180d}
+.fcard.tier-legend{--c1:#fff0a0;--c2:#b84ad6;--ink:#1d0a2a;background:radial-gradient(circle at 25% 0%,rgba(255,255,255,.65),transparent 45%),linear-gradient(150deg,#ffe27a,#ff8d5a 45%,#b04ad8)}
+.fc-shine{position:absolute;top:0;right:0;bottom:0;left:0;background:repeating-linear-gradient(115deg,transparent 0 22px,rgba(255,255,255,.08) 22px 34px);pointer-events:none}
+.fc-top{display:flex;gap:6px;flex:1;min-height:0;position:relative}
+.fc-left{width:23%;display:flex;flex-direction:column;align-items:center;gap:3px;padding-top:4px}
+.fc-ovr{font-size:clamp(38px,5vw,54px);font-weight:1000;line-height:.95;letter-spacing:-.04em}
+.fc-pos{font-size:17px;font-weight:900;letter-spacing:.06em;border-top:2px solid rgba(0,0,0,.3);padding-top:3px;width:100%;text-align:center}
+.fc-flag{font-size:25px;line-height:1.1}
+.fc-badge{width:30px;height:30px;border-radius:9px 9px 15px 15px;display:grid;place-items:center;font-weight:900;font-size:14px;border:2px solid rgba(0,0,0,.35);box-shadow:0 2px 6px #0005}
+.fc-avatar{flex:1;display:flex;align-items:flex-end;justify-content:center;min-width:0}
+.fc-avatar canvas{width:100%;max-height:100%;aspect-ratio:120/168;image-rendering:pixelated;filter:drop-shadow(0 6px 8px rgba(0,0,0,.35))}
+.fc-name{text-align:center;font-size:19px;font-weight:1000;letter-spacing:.04em;text-transform:uppercase;padding:5px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative}
+.fc-line{height:2px;background:rgba(0,0,0,.28);margin:2px 12px 6px}
+.fc-stats{display:flex;justify-content:center;gap:12px;position:relative}
+.fc-col{display:flex;flex-direction:column;gap:2px;min-width:84px}
+.fc-col div{display:flex;align-items:baseline;gap:7px}
+.fc-col b{font-size:22px;font-weight:1000;width:34px;text-align:right}
+.fc-col span{font-size:15px;font-weight:800;opacity:.82;letter-spacing:.04em}
+.fc-div{width:2px;background:rgba(0,0,0,.25);border-radius:2px}
+.fc-foot{text-align:center;font-size:12px;font-weight:800;opacity:.75;padding-top:6px;position:relative}
+.fcard.mini{max-width:260px}
+.fcard.big{max-width:360px}.fcard.big .fc-ovr{font-size:66px}.fcard.big .fc-name{font-size:23px}.fcard.big .fc-col b{font-size:27px;width:40px}.fcard.big .fc-col span{font-size:17px}
+/* profile tab */
+.profile-grid{display:grid;grid-template-columns:minmax(260px,360px) 1fr;gap:18px;align-items:start}
+.profile-card{position:sticky;top:130px}
+.profile-info{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.panel2{background:linear-gradient(145deg,#174a34,#0d261b);border:1px solid #34795a;border-radius:16px;padding:14px 16px}
+.panel2 h3{margin:0 0 8px;font-size:18px;color:#8ff5c0}
+.irow{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed #2b5c46;font-size:15px}
+.irow span{color:#bddccb}.irow b{text-align:right}
+.pbars{margin-bottom:8px}.pbar{display:grid;grid-template-columns:44px 1fr 34px;gap:8px;align-items:center;margin:5px 0}
+.pbl{font-weight:800;font-size:14px;color:#d4efe0}.pbt{height:12px;background:#0a1e15;border-radius:9px;overflow:hidden;border:1px solid #2b5c46}.pbt i{display:block;height:100%;border-radius:9px}
+@media(max-width:900px){.profile-grid{grid-template-columns:1fr}.profile-card{position:static}.profile-info{grid-template-columns:1fr}#hud{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){body{font-size:16px}.fc-col b{font-size:20px}}
+
+/* iOS fixes */
+button,select,input,.tab,.choice{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+select,input{-webkit-appearance:none;appearance:none;border-radius:12px;font-size:16px!important}
+select{background-image:linear-gradient(45deg,transparent 50%,#9fe9bf 50%),linear-gradient(135deg,#9fe9bf 50%,transparent 50%);background-position:calc(100% - 20px) 55%,calc(100% - 14px) 55%;background-size:6px 6px;background-repeat:no-repeat;padding-right:36px}
+@media(max-width:700px){header{position:static}.profile-card{position:static}}
+.modalbox{max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+</style>
+</head>
+<body><noscript><div style="background:#ffd66b;color:#222;padding:12px 16px;font-weight:800">เบราว์เซอร์นี้ปิด JavaScript อยู่ เกมจึงเล่นไม่ได้ — เปิดไฟล์ด้วย Safari หรือ Chrome แทน</div></noscript>
+<div id="toastBox" style="position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:60;max-width:90vw;background:#0b2a1c;border:1px solid #6df0ae;color:#eafff2;padding:10px 16px;border-radius:14px;font-weight:800;opacity:0;transition:opacity .25s;pointer-events:none;text-align:center"></div>
+<div id="jsErr" style="display:none;position:fixed;left:8px;right:8px;bottom:8px;z-index:99;background:#7a1020;color:#fff;padding:10px 12px;border-radius:12px;font:13px/1.4 monospace;word-break:break-all"></div>
+<script>window.onerror=function(m,u,l,c){var e=document.getElementById('jsErr');if(e){e.style.display='block';e.textContent='ERROR: '+m+' (บรรทัด '+l+':'+c+')'}};</script>
+
+<header><div class="brand"><div class="ball">⚽</div><div>BECOME A LEGEND <small class="muted" style="display:block;font-size:9px;letter-spacing:.2em">YOUR FOOTBALL STORY</small></div></div>
+<div id="hud"><div class="stat"><small>อายุ / ปี</small><b id="hAge">—</b></div><div class="stat"><small>สโมสร</small><b id="hClub">—</b></div><div class="stat"><small>OVR</small><b id="hOvr">—</b></div><div class="stat"><small>เงินเก็บ</small><b id="hMoney">—</b></div><div class="stat"><small>พลังงาน</small><b id="hEnergy">—</b></div><div class="stat"><small>เวลา</small><b id="hClock">หยุด</b></div></div></header>
+<div id="decisionModal" class="modalback hidden"><div class="modalbox" id="decisionContent"></div></div><main><section class="hero" id="heroBox"><div class="eyebrow">THE EMERALD ROAD TO IMMORTALITY</div><h1>จากเด็กธรรมดา<br>สู่ตำนานลูกหนัง</h1><p>ใช้ชีวิตนักฟุตบอลทีละปี ฝึกซ้อม วางแผนพัฒนาฝีเท้า และตัดสินใจในจังหวะสำคัญของการแข่งขัน เวลาเดินเองได้ แต่คุณเป็นคนกำหนดจังหวะ</p></section>
+<section id="create" class="panel"><div class="eyebrow">EMERALD CAREER • CREATE YOUR LEGACY</div><h2>⚽ สร้างนักเตะของคุณ</h2><div class="pill">PLAYER IDENTITY • CAREER PROFILE • SEASON JOURNEY</div><p class="muted">กำหนดตัวตนของคุณ ก่อนเริ่มเขียนประวัติศาสตร์ลูกหนังบทใหม่</p><div class="fields"><div class="field"><label>ชื่อ-นามสกุล</label><input id="name" maxlength="35" placeholder="เช่น ธนกร ใจเด็ด"></div><div class="field"><label>เบอร์เสื้อ (1–99)</label><input id="number" type="number" min="1" max="99" value="10"></div><div class="field"><label>ปีเกิด</label><input id="birth" type="number" min="1900" max="2026" value="2008"></div><div class="field"><label>สัญชาติ</label><select id="country"><optgroup label="เอเชีย"><option value="ไทย">🇹🇭 ไทย</option><option value="กัมพูชา">🇰🇭 กัมพูชา</option><option value="เกาหลีเหนือ">🇰🇵 เกาหลีเหนือ</option><option value="เกาหลีใต้">🇰🇷 เกาหลีใต้</option><option value="ญี่ปุ่น">🇯🇵 ญี่ปุ่น</option><option value="จีน">🇨🇳 จีน</option><option value="มองโกเลีย">🇲🇳 มองโกเลีย</option><option value="เวียดนาม">🇻🇳 เวียดนาม</option><option value="ลาว">🇱🇦 ลาว</option><option value="เมียนมา">🇲🇲 เมียนมา</option><option value="มาเลเซีย">🇲🇾 มาเลเซีย</option><option value="สิงคโปร์">🇸🇬 สิงคโปร์</option><option value="อินโดนีเซีย">🇮🇩 อินโดนีเซีย</option><option value="ฟิลิปปินส์">🇵🇭 ฟิลิปปินส์</option><option value="ติมอร์-เลสเต">🇹🇱 ติมอร์-เลสเต</option><option value="บรูไน">🇧🇳 บรูไน</option><option value="อินเดีย">🇮🇳 อินเดีย</option><option value="ปากีสถาน">🇵🇰 ปากีสถาน</option><option value="บังกลาเทศ">🇧🇩 บังกลาเทศ</option><option value="ศรีลังกา">🇱🇰 ศรีลังกา</option><option value="เนปาล">🇳🇵 เนปาล</option><option value="อัฟกานิสถาน">🇦🇫 อัฟกานิสถาน</option><option value="อุซเบกิสถาน">🇺🇿 อุซเบกิสถาน</option><option value="คาซัคสถาน">🇰🇿 คาซัคสถาน</option><option value="อิหร่าน">🇮🇷 อิหร่าน</option><option value="อิรัก">🇮🇶 อิรัก</option><option value="ซาอุดีอาระเบีย">🇸🇦 ซาอุดีอาระเบีย</option><option value="สหรัฐอาหรับเอมิเรตส์">🇦🇪 สหรัฐอาหรับเอมิเรตส์</option><option value="กาตาร์">🇶🇦 กาตาร์</option><option value="จอร์แดน">🇯🇴 จอร์แดน</option><option value="เลบานอน">🇱🇧 เลบานอน</option><option value="ซีเรีย">🇸🇾 ซีเรีย</option><option value="อิสราเอล">🇮🇱 อิสราเอล</option><option value="ตุรกี">🇹🇷 ตุรกี</option><option value="จอร์เจีย">🇬🇪 จอร์เจีย</option><option value="อาร์เมเนีย">🇦🇲 อาร์เมเนีย</option><option value="อาเซอร์ไบจาน">🇦🇿 อาเซอร์ไบจาน</option></optgroup><optgroup label="ยุโรป"><option value="อังกฤษ">🏴󠁧󠁢󠁥󠁮󠁧󠁿 อังกฤษ</option><option value="สกอตแลนด์">🏴󠁧󠁢󠁳󠁣󠁴󠁿 สกอตแลนด์</option><option value="เวลส์">🏴󠁧󠁢󠁷󠁬󠁳󠁿 เวลส์</option><option value="ไอร์แลนด์">🇮🇪 ไอร์แลนด์</option><option value="ฝรั่งเศส">🇫🇷 ฝรั่งเศส</option><option value="เยอรมนี">🇩🇪 เยอรมนี</option><option value="เนเธอร์แลนด์">🇳🇱 เนเธอร์แลนด์</option><option value="เบลเยียม">🇧🇪 เบลเยียม</option><option value="ลักเซมเบิร์ก">🇱🇺 ลักเซมเบิร์ก</option><option value="สวิตเซอร์แลนด์">🇨🇭 สวิตเซอร์แลนด์</option><option value="ออสเตรีย">🇦🇹 ออสเตรีย</option><option value="เดนมาร์ก">🇩🇰 เดนมาร์ก</option><option value="สวีเดน">🇸🇪 สวีเดน</option><option value="นอร์เวย์">🇳🇴 นอร์เวย์</option><option value="ฟินแลนด์">🇫🇮 ฟินแลนด์</option><option value="ไอซ์แลนด์">🇮🇸 ไอซ์แลนด์</option><option value="สเปน">🇪🇸 สเปน</option><option value="โปรตุเกส">🇵🇹 โปรตุเกส</option><option value="อิตาลี">🇮🇹 อิตาลี</option><option value="กรีซ">🇬🇷 กรีซ</option><option value="มอลตา">🇲🇹 มอลตา</option><option value="โครเอเชีย">🇭🇷 โครเอเชีย</option><option value="เซอร์เบีย">🇷🇸 เซอร์เบีย</option><option value="บอสเนียและเฮอร์เซโกวีนา">🇧🇦 บอสเนียและเฮอร์เซโกวีนา</option><option value="มอนเตเนโกร">🇲🇪 มอนเตเนโกร</option><option value="สโลวีเนีย">🇸🇮 สโลวีเนีย</option><option value="มาซิโดเนียเหนือ">🇲🇰 มาซิโดเนียเหนือ</option><option value="แอลเบเนีย">🇦🇱 แอลเบเนีย</option><option value="ฮังการี">🇭🇺 ฮังการี</option><option value="เช็กเกีย">🇨🇿 เช็กเกีย</option><option value="สโลวาเกีย">🇸🇰 สโลวาเกีย</option><option value="โปแลนด์">🇵🇱 โปแลนด์</option><option value="โรมาเนีย">🇷🇴 โรมาเนีย</option><option value="บัลแกเรีย">🇧🇬 บัลแกเรีย</option><option value="ยูเครน">🇺🇦 ยูเครน</option><option value="รัสเซีย">🇷🇺 รัสเซีย</option><option value="เบลารุส">🇧🇾 เบลารุส</option><option value="ลิทัวเนีย">🇱🇹 ลิทัวเนีย</option><option value="ลัตเวีย">🇱🇻 ลัตเวีย</option><option value="เอสโตเนีย">🇪🇪 เอสโตเนีย</option></optgroup><optgroup label="แอฟริกา"><option value="ไนจีเรีย">🇳🇬 ไนจีเรีย</option><option value="กานา">🇬🇭 กานา</option><option value="ไอวอรีโคสต์">🇨🇮 ไอวอรีโคสต์</option><option value="เซเนกัล">🇸🇳 เซเนกัล</option><option value="มาลี">🇲🇱 มาลี</option><option value="แคเมอรูน">🇨🇲 แคเมอรูน</option><option value="กินี">🇬🇳 กินี</option><option value="บูร์กินาฟาโซ">🇧🇫 บูร์กินาฟาโซ</option><option value="โตโก">🇹🇬 โตโก</option><option value="เบนิน">🇧🇯 เบนิน</option><option value="กาบอง">🇬🇦 กาบอง</option><option value="เคปเวิร์ด">🇨🇻 เคปเวิร์ด</option><option value="คองโก (ดีอาร์)">🇨🇩 คองโก (ดีอาร์)</option><option value="แองโกลา">🇦🇴 แองโกลา</option><option value="แอฟริกาใต้">🇿🇦 แอฟริกาใต้</option><option value="ซิมบับเว">🇿🇼 ซิมบับเว</option><option value="แซมเบีย">🇿🇲 แซมเบีย</option><option value="โมซัมบิก">🇲🇿 โมซัมบิก</option><option value="เคนยา">🇰🇪 เคนยา</option><option value="เอธิโอเปีย">🇪🇹 เอธิโอเปีย</option><option value="แทนซาเนีย">🇹🇿 แทนซาเนีย</option><option value="ยูกันดา">🇺🇬 ยูกันดา</option><option value="โมร็อกโก">🇲🇦 โมร็อกโก</option><option value="แอลจีเรีย">🇩🇿 แอลจีเรีย</option><option value="ตูนิเซีย">🇹🇳 ตูนิเซีย</option><option value="อียิปต์">🇪🇬 อียิปต์</option><option value="ลิเบีย">🇱🇾 ลิเบีย</option></optgroup><optgroup label="อเมริกา"><option value="สหรัฐอเมริกา">🇺🇸 สหรัฐอเมริกา</option><option value="แคนาดา">🇨🇦 แคนาดา</option><option value="เม็กซิโก">🇲🇽 เม็กซิโก</option><option value="บราซิล">🇧🇷 บราซิล</option><option value="อาร์เจนตินา">🇦🇷 อาร์เจนตินา</option><option value="อุรุกวัย">🇺🇾 อุรุกวัย</option><option value="ชิลี">🇨🇱 ชิลี</option><option value="โคลอมเบีย">🇨🇴 โคลอมเบีย</option><option value="เปรู">🇵🇪 เปรู</option><option value="เอกวาดอร์">🇪🇨 เอกวาดอร์</option><option value="โบลิเวีย">🇧🇴 โบลิเวีย</option><option value="ปารากวัย">🇵🇾 ปารากวัย</option><option value="เวเนซุเอลา">🇻🇪 เวเนซุเอลา</option><option value="คอสตาริกา">🇨🇷 คอสตาริกา</option><option value="ปานามา">🇵🇦 ปานามา</option><option value="ฮอนดูรัส">🇭🇳 ฮอนดูรัส</option><option value="เอลซัลวาดอร์">🇸🇻 เอลซัลวาดอร์</option><option value="กัวเตมาลา">🇬🇹 กัวเตมาลา</option><option value="คิวบา">🇨🇺 คิวบา</option><option value="จาเมกา">🇯🇲 จาเมกา</option><option value="เฮติ">🇭🇹 เฮติ</option><option value="ตรินิแดดและโตเบโก">🇹🇹 ตรินิแดดและโตเบโก</option></optgroup><optgroup label="โอเชียเนีย"><option value="ออสเตรเลีย">🇦🇺 ออสเตรเลีย</option><option value="นิวซีแลนด์">🇳🇿 นิวซีแลนด์</option><option value="ฟิจิ">🇫🇯 ฟิจิ</option><option value="ปาปัวนิวกินี">🇵🇬 ปาปัวนิวกินี</option><option value="ซามัว">🇼🇸 ซามัว</option><option value="ตองกา">🇹🇴 ตองกา</option></optgroup></select></div><div class="field"><label>ตำแหน่ง</label><select id="position"><option value="ST">กองหน้า (ST)</option><option value="Winger">ปีก (LW/RW)</option><option value="CM">กองกลาง (CM)</option><option value="CB">กองหลัง (CB)</option><option value="GK">ผู้รักษาประตู (GK)</option></select></div></div><div id="jsOk" style="margin:12px 0 0;font-weight:800;color:#ffd66b">⏳ กำลังโหลดเกม...</div><div id="formMsg" style="display:none;margin:12px 0 0;padding:10px 14px;border-radius:12px;background:#5a1620;color:#ffd9de;font-weight:800"></div><div class="actions"><button onclick="newGame()">เริ่มต้นอาชีพ</button><button class="secondary" onclick="loadGame()">โหลดเกม</button></div></section>
+<section id="game" class="hidden"><div class="layout"><div>
+<div class="panel"><div class="tabs"><button class="tab active" data-tab="career">อาชีพ</button><button class="tab" data-tab="training">ฝึกซ้อม</button><button class="tab" data-tab="shop">ร้านค้า</button><button class="tab" data-tab="profile">🪪 ผู้เล่น</button><button class="tab" data-tab="records">สถิติ</button><button class="tab" data-tab="clubs">สโมสร</button><button class="tab" data-tab="awards">🏆 หอเกียรติยศ</button></div>
+<div id="career" class="tabbody"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><div><h2 id="seasonTitle">ฤดูกาลของคุณ</h2><div id="clubLine" class="muted"></div></div><span class="pill" id="phase">วัยเยาว์</span></div>
+<div class="event"><b>การควบคุมเวลา</b><div class="muted">1 ปี = 40 วินาทีจริง • หยุดเวลาเพื่อวางแผนหรือจัดการอีเวนท์ได้ตลอด</div><div class="timeline"><span id="yearProgress"></span></div><div class="speedrow"><button id="pauseBtn" onclick="togglePause()">Ⅱ หยุด</button><button class="speed active" data-speed="1">x1</button><button class="speed" data-speed="2">x2</button><button class="speed" data-speed="4">x4</button><span class="pill" id="timeLabel">0 / 40 วินาที</span></div><div class="actions"><button class="secondary" onclick="advanceYear()">ข้ามไปปีถัดไป</button><button class="secondary" onclick="saveGame()">บันทึกเกม</button><button class="danger" onclick="retire(false)">แขวนสตั๊ด</button></div></div>
+<div id="eventArea"><div class="event">เริ่มเกมเพื่อเข้าสู่เส้นทางนักฟุตบอลของคุณ</div></div><div id="matchArea"></div></div>
+<div id="training" class="tabbody hidden"><h2>แผนการฝึกซ้อมประจำปี</h2><p class="muted">เลือกแผนฝึกหลักได้ที่นี่ และหลังอายุ 15 ปีจะมีอีเวนท์ฝึกพิเศษช่วงกลางปีให้เลือกอีก 5 แบบตามตำแหน่ง</p><div id="trainingOptions"></div></div>
+<div id="shop" class="tabbody hidden"><h2>ไลฟ์สไตล์ & ร้านค้า</h2>
+<div class="shop-tabs"><button class="tab active" data-shop-tab="items" onclick="setShopTab('items')">ของใช้ทั่วไป</button><button class="tab" data-shop-tab="homes" onclick="setShopTab('homes')">ซื้อบ้าน</button><button class="tab" data-shop-tab="cars" onclick="setShopTab('cars')">ซื้อรถ</button></div>
+<div id="shopOptions"></div></div>
+<div id="profile" class="tabbody hidden"><h2>🪪 ข้อมูลนักเตะ</h2><div id="profileBody"></div></div><div id="records" class="tabbody hidden"><h2>สถิติอาชีพ</h2><div id="recordsBody"></div></div><div id="awards" class="tabbody hidden"><h2>🏆 หอเกียรติยศประจำฤดูกาล</h2><p class="muted">ประกาศผลแยกตามประเภทรางวัลและปีที่ได้รับ</p><div id="awardsBody"></div></div><div id="clubs" class="tabbody hidden"><h2>ฐานข้อมูลสโมสร</h2><p class="muted">รวมทีมจาก 5 ลีกสูงสุดและลีกรองของอังกฤษ สเปน อิตาลี เยอรมนี และฝรั่งเศส (ข้อมูลฤดูกาล 2026/27 สำหรับใช้ในเกม)</p><div id="clubsBody"></div></div>
+</div></div><aside><div class="panel"><h3>การ์ดนักเตะ</h3><div id="playerCard"></div></div><div class="panel"><h3>สถานะชีวิต</h3><div id="lifeStats"></div></div><div class="panel"><h3>📖 บันทึกชีวิตนอกสนาม</h3><div id="news" class="log"></div></div></aside></div></section><div class="footer">BECOME A LEGEND • Single-file offline simulation</div></main>
+<script>
+const $=id=>document.getElementById(id),rand=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),gauss=(m,sd)=>m+sd*((Math.random()+Math.random()+Math.random()+Math.random()-2)/.5774*.5),chance=p=>Math.random()*100<p,pick=a=>a[rand(0,a.length-1)],clamp=(n,a=0,b=100)=>Math.max(a,Math.min(b,n)),money=n=>new Intl.NumberFormat('th-TH',{style:'currency',currency:'THB',maximumFractionDigits:0}).format(n);
+const COUNTRY_DATA=[['ไทย','🇹🇭',172,'seasia'],['กัมพูชา','🇰🇭',168,'seasia'],['เกาหลีเหนือ','🇰🇵',170,'eastasia'],['เกาหลีใต้','🇰🇷',175,'eastasia'],['ญี่ปุ่น','🇯🇵',172,'eastasia'],['จีน','🇨🇳',173,'eastasia'],['มองโกเลีย','🇲🇳',171,'centralasia'],['เวียดนาม','🇻🇳',168,'seasia'],['ลาว','🇱🇦',164,'seasia'],['เมียนมา','🇲🇲',166,'seasia'],['มาเลเซีย','🇲🇾',168,'seasia'],['สิงคโปร์','🇸🇬',171,'seasia'],['อินโดนีเซีย','🇮🇩',166,'seasia'],['ฟิลิปปินส์','🇵🇭',164,'seasia'],['ติมอร์-เลสเต','🇹🇱',160,'seasia'],['บรูไน','🇧🇳',166,'seasia'],['อินเดีย','🇮🇳',168,'southasia'],['ปากีสถาน','🇵🇰',170,'southasia'],['บังกลาเทศ','🇧🇩',166,'southasia'],['ศรีลังกา','🇱🇰',168,'southasia'],['เนปาล','🇳🇵',164,'southasia'],['อัฟกานิสถาน','🇦🇫',169,'centralasia'],['อุซเบกิสถาน','🇺🇿',172,'centralasia'],['คาซัคสถาน','🇰🇿',172,'centralasia'],['อิหร่าน','🇮🇷',174,'mideast'],['อิรัก','🇮🇶',170,'mideast'],['ซาอุดีอาระเบีย','🇸🇦',170,'mideast'],['สหรัฐอาหรับเอมิเรตส์','🇦🇪',172,'mideast'],['กาตาร์','🇶🇦',171,'mideast'],['จอร์แดน','🇯🇴',172,'mideast'],['เลบานอน','🇱🇧',175,'mideast'],['ซีเรีย','🇸🇾',171,'mideast'],['อิสราเอล','🇮🇱',176,'mideast'],['ตุรกี','🇹🇷',175,'mideast'],['จอร์เจีย','🇬🇪',176,'easteu'],['อาร์เมเนีย','🇦🇲',173,'mideast'],['อาเซอร์ไบจาน','🇦🇿',175,'mideast'],['อังกฤษ','🏴󠁧󠁢󠁥󠁮󠁧󠁿',178,'northeu'],['สกอตแลนด์','🏴󠁧󠁢󠁳󠁣󠁴󠁿',177,'northeu'],['เวลส์','🏴󠁧󠁢󠁷󠁬󠁳󠁿',177,'northeu'],['ไอร์แลนด์','🇮🇪',178,'northeu'],['ฝรั่งเศส','🇫🇷',177,'france'],['เยอรมนี','🇩🇪',180,'northeu'],['เนเธอร์แลนด์','🇳🇱',183,'northeu'],['เบลเยียม','🇧🇪',180,'northeu'],['ลักเซมเบิร์ก','🇱🇺',179,'northeu'],['สวิตเซอร์แลนด์','🇨🇭',179,'northeu'],['ออสเตรีย','🇦🇹',179,'northeu'],['เดนมาร์ก','🇩🇰',182,'northeu'],['สวีเดน','🇸🇪',181,'northeu'],['นอร์เวย์','🇳🇴',181,'northeu'],['ฟินแลนด์','🇫🇮',180,'northeu'],['ไอซ์แลนด์','🇮🇸',181,'northeu'],['สเปน','🇪🇸',177,'southeu'],['โปรตุเกส','🇵🇹',175,'southeu'],['อิตาลี','🇮🇹',177,'southeu'],['กรีซ','🇬🇷',178,'southeu'],['มอลตา','🇲🇹',173,'southeu'],['โครเอเชีย','🇭🇷',182,'easteu'],['เซอร์เบีย','🇷🇸',182,'easteu'],['บอสเนียและเฮอร์เซโกวีนา','🇧🇦',182,'easteu'],['มอนเตเนโกร','🇲🇪',183,'easteu'],['สโลวีเนีย','🇸🇮',181,'easteu'],['มาซิโดเนียเหนือ','🇲🇰',178,'easteu'],['แอลเบเนีย','🇦🇱',176,'southeu'],['ฮังการี','🇭🇺',178,'easteu'],['เช็กเกีย','🇨🇿',180,'easteu'],['สโลวาเกีย','🇸🇰',180,'easteu'],['โปแลนด์','🇵🇱',180,'easteu'],['โรมาเนีย','🇷🇴',175,'easteu'],['บัลแกเรีย','🇧🇬',177,'easteu'],['ยูเครน','🇺🇦',178,'easteu'],['รัสเซีย','🇷🇺',177,'easteu'],['เบลารุส','🇧🇾',178,'easteu'],['ลิทัวเนีย','🇱🇹',180,'easteu'],['ลัตเวีย','🇱🇻',180,'easteu'],['เอสโตเนีย','🇪🇪',180,'easteu'],['ไนจีเรีย','🇳🇬',176,'westafrica'],['กานา','🇬🇭',173,'westafrica'],['ไอวอรีโคสต์','🇨🇮',174,'westafrica'],['เซเนกัล','🇸🇳',177,'westafrica'],['มาลี','🇲🇱',174,'westafrica'],['แคเมอรูน','🇨🇲',172,'westafrica'],['กินี','🇬🇳',172,'westafrica'],['บูร์กินาฟาโซ','🇧🇫',172,'westafrica'],['โตโก','🇹🇬',172,'westafrica'],['เบนิน','🇧🇯',172,'westafrica'],['กาบอง','🇬🇦',172,'westafrica'],['เคปเวิร์ด','🇨🇻',172,'westafrica'],['คองโก (ดีอาร์)','🇨🇩',170,'westafrica'],['แองโกลา','🇦🇴',170,'westafrica'],['แอฟริกาใต้','🇿🇦',172,'eastafrica'],['ซิมบับเว','🇿🇼',170,'eastafrica'],['แซมเบีย','🇿🇲',170,'eastafrica'],['โมซัมบิก','🇲🇿',168,'eastafrica'],['เคนยา','🇰🇪',171,'eastafrica'],['เอธิโอเปีย','🇪🇹',168,'eastafrica'],['แทนซาเนีย','🇹🇿',168,'eastafrica'],['ยูกันดา','🇺🇬',170,'eastafrica'],['โมร็อกโก','🇲🇦',174,'northafrica'],['แอลจีเรีย','🇩🇿',175,'northafrica'],['ตูนิเซีย','🇹🇳',175,'northafrica'],['อียิปต์','🇪🇬',172,'northafrica'],['ลิเบีย','🇱🇾',173,'northafrica'],['สหรัฐอเมริกา','🇺🇸',177,'usa'],['แคนาดา','🇨🇦',178,'usa'],['เม็กซิโก','🇲🇽',170,'latam'],['บราซิล','🇧🇷',175,'latam'],['อาร์เจนตินา','🇦🇷',176,'latamsouth'],['อุรุกวัย','🇺🇾',177,'latamsouth'],['ชิลี','🇨🇱',172,'latamsouth'],['โคลอมเบีย','🇨🇴',171,'latam'],['เปรู','🇵🇪',165,'andes'],['เอกวาดอร์','🇪🇨',168,'andes'],['โบลิเวีย','🇧🇴',165,'andes'],['ปารากวัย','🇵🇾',170,'latam'],['เวเนซุเอลา','🇻🇪',172,'latam'],['คอสตาริกา','🇨🇷',172,'latam'],['ปานามา','🇵🇦',170,'latam'],['ฮอนดูรัส','🇭🇳',168,'latam'],['เอลซัลวาดอร์','🇸🇻',167,'latam'],['กัวเตมาลา','🇬🇹',165,'andes'],['คิวบา','🇨🇺',173,'caribbean'],['จาเมกา','🇯🇲',175,'caribbean'],['เฮติ','🇭🇹',171,'caribbean'],['ตรินิแดดและโตเบโก','🇹🇹',172,'caribbean'],['ออสเตรเลีย','🇦🇺',178,'oceania'],['นิวซีแลนด์','🇳🇿',178,'oceania'],['ฟิจิ','🇫🇯',175,'polynesia'],['ปาปัวนิวกินี','🇵🇬',164,'polynesia'],['ซามัว','🇼🇸',178,'polynesia'],['ตองกา','🇹🇴',178,'polynesia']];
+const REGION_LOOK={seasia:{skin:[1,2,2,3],hair:[0,0,0,1],eye:[0]},eastasia:{skin:[0,1,1],hair:[0,0,0,1],eye:[0]},centralasia:{skin:[1,1,2],hair:[0,0,1],eye:[0]},southasia:{skin:[2,3,3,4],hair:[0,0,0,1],eye:[0]},mideast:{skin:[1,2,2,3],hair:[0,0,1,1,2],eye:[0,0,1]},northeu:{skin:[0,0,1],hair:[1,2,3,3,4,0],eye:[1,1,2]},southeu:{skin:[0,1,1,2],hair:[0,1,1,2],eye:[0,1]},easteu:{skin:[0,0,1],hair:[1,2,2,3,0],eye:[1,2,0]},france:{skin:[0,1,2,4,5],hair:[0,1,2,3],eye:[0,1,2]},usa:{skin:[0,1,1,2,4,5],hair:[0,1,2,3,4],eye:[0,1,2]},westafrica:{skin:[4,5,5,5],hair:[0],eye:[0]},eastafrica:{skin:[3,4,5,5],hair:[0],eye:[0]},northafrica:{skin:[1,2,2,3],hair:[0,0,1],eye:[0]},latam:{skin:[1,2,2,3,4],hair:[0,0,1,1,2],eye:[0,1]},latamsouth:{skin:[0,1,1,2],hair:[0,1,2,3],eye:[0,1,2]},andes:{skin:[2,3,3],hair:[0,0],eye:[0]},caribbean:{skin:[3,4,5,5],hair:[0],eye:[0]},oceania:{skin:[0,1,2],hair:[1,2,3,4],eye:[0,1,2]},polynesia:{skin:[2,3,3],hair:[0,0,1],eye:[0]}};
+const countries=COUNTRY_DATA.map(c=>c[0]);
+
+const countrySelect=$('country');if(countrySelect&&!countrySelect.options.length)countrySelect.innerHTML=countries.map(c=>`<option value="${c}">${c}</option>`).join('');
+const leagues=['พรีเมียร์ลีก อังกฤษ','แชมเปียนชิพ อังกฤษ','ลาลีกา สเปน','ลา ลีกา 2 สเปน','เซเรียอา อิตาลี','เซเรียบี อิตาลี','บุนเดสลีกา เยอรมนี','บุนเดสลีกา 2 เยอรมนี','ลีกเอิง ฝรั่งเศส','ลีกเดอซ์ ฝรั่งเศส'];
+const clubs={
+'พรีเมียร์ลีก อังกฤษ':['อาร์เซนอล','แอสตัน วิลลา','บอร์นมัธ','เบรนท์ฟอร์ด','ไบรท์ตัน','เชลซี','โคเวนทรี ซิตี้','คริสตัล พาเลซ','เอฟเวอร์ตัน','ฟูแลม','ฮัลล์ ซิตี้','อิปสวิช ทาวน์','ลีดส์ ยูไนเต็ด','ลิเวอร์พูล','แมนเชสเตอร์ ซิตี้','แมนเชสเตอร์ ยูไนเต็ด','นิวคาสเซิล ยูไนเต็ด','น็อตติงแฮม ฟอเรสต์','ซันเดอร์แลนด์','ท็อตแนม ฮอตสเปอร์'],
+'แชมเปียนชิพ อังกฤษ':['เบอร์มิงแฮม ซิตี้','แบล็กเบิร์น โรเวอร์ส','โบลตัน วันเดอเรอร์ส','บริสตอล ซิตี้','เบิร์นลีย์','คาร์ดิฟฟ์ ซิตี้','ชาร์ลตัน แอธเลติก','ดาร์บี เคาน์ตี','ลินคอล์น ซิตี้','มิดเดิลสโบรห์','มิลล์วอลล์','นอริช ซิตี้','พอร์ตสมัท','เพรสตัน นอร์ท เอนด์','ควีนส์พาร์ก เรนเจอร์ส','เชฟฟิลด์ ยูไนเต็ด','เซาแธมป์ตัน','สโต๊ก ซิตี้','สวอนซี ซิตี้','วัตฟอร์ด','เวสต์บรอมวิช อัลเบียน','เวสต์แฮม ยูไนเต็ด','วูล์ฟแฮมป์ตัน','เร็กซ์แฮม'],
+'ลาลีกา สเปน':['แอธเลติก บิลเบา','แอตเลติโก มาดริด','โอซาซูนา','เซลตา บีโก','อลาเบส','เอลเช','บาร์เซโลนา','เกตาเฟ','เลบันเต','มาลากา','ราซิง ซานตานเดร์','ราโย บาเยกาโน','เดปอร์ติโบ ลา คอรุนญา','เอสปันญอล','เรอัล เบติส','เรอัล มาดริด','เรอัล โซเซียดัด','เซบียา','บาเลนเซีย','บียาร์เรอัล'],
+'ลา ลีกา 2 สเปน':['อัลเมเรีย','อันดอร์รา','บูร์โกส','กาดิซ','กัสเตยอน','คอร์โดบา','เออิบาร์','กรานาดา','อูเอสกา','ลาส พัลมาส','เลกาเนส','มิรานเดส','เรอัล โอเบียโด','เรอัล ซาราโกซา','สปอร์ติง กิฆอน','เตเนริเฟ','เรอัล บายาโดลิด','อัลบาเซเต','คัลตูรัล เลโอเนซา','เซอูตา'],
+'เซเรียอา อิตาลี':['อตาลันตา','โบโลญญา','กายารี','โคโม','ฟิออเรนตินา','โฟรซิโนเน','เจนัว','อินเตอร์ มิลาน','ยูเวนตุส','ลาซิโอ','เลชเช','เอซี มิลาน','มอนซา','นาโปลี','ปาร์มา','โรมา','ซัสซูโอโล','โตริโน','อูดิเนเซ','เวเนเซีย'],
+'เซเรียบี อิตาลี':['อาเรซโซ','อัสโคลี','อเวลลิโน','เบเนเวนโต','คาร์ราเรเซ','คาตันซาโร','เชเซนา','เครโมเนเซ','เอ็มโปลี','เวโรนา','จูเว สตาเบีย','มานโตวา','โมเดนา','ปาโดวา','ปาแลร์โม','ปิซา','ซามพ์โดเรีย','ซุดทิโรล','วิเชนซา','วีร์ตุส เอ็นเตลลา'],
+'บุนเดสลีกา เยอรมนี':['เอาก์สบวร์ก','ยูเนียน เบอร์ลิน','แวร์เดอร์ เบรเมน','โบรุสเซีย ดอร์ทมุนด์','เอลเวอร์สแบร์ก','ไอน์ทรัค แฟรงก์เฟิร์ต','ไฟรบวร์ก','ฮัมบูร์ก','ฮอฟเฟนไฮม์','โคโลญจน์','แอร์เบ ไลป์ซิก','ไบเออร์ เลเวอร์คูเซน','ไมนซ์','โบรุสเซีย มึนเชนกลัดบัค','บาเยิร์น มิวนิก','พาเดอร์บอร์น','ชาลเก้ 04','สตุ๊ตการ์ท'],
+'บุนเดสลีกา 2 เยอรมนี':['แฮร์ธา เบอร์ลิน','เนิร์นแบร์ก','ไฮเดนไฮม์','มักเดบวร์ก','โวล์ฟสบวร์ก','ไกเซอร์สเลาเทิร์น','เอเนอร์กี ค็อตบุส','โบคุม','ซังต์ เพาลี','ออสนาบรึค','กรอยเธอร์ เฟือร์ธ','คาร์ลสรูห์','ไอน์ทรัคท์ เบราน์ชไวก์','อาร์มิเนีย บีเลเฟลด์','ฮันโนเวอร์ 96','ดาร์มสตัดท์','ดินาโม เดรสเดน','โฮลสไตน์ คีล'],
+'ลีกเอิง ฝรั่งเศส':['อองเชร์','โอแซร์','แบรสต์','เลอ อาฟร์','เลอม็องส์','ล็องส์','ลีลล์','ลอริยองต์','โมนาโก','นีซ','โอลิมปิก ลียง','โอลิมปิก มาร์กเซย','ปารีส เอฟซี','ปารีส แซงต์-แชร์กแมง','แรนส์','สตราสบูร์ก','ตูลูส','ทรัวส์'],
+'ลีกเดอซ์ ฝรั่งเศส':['อาเมียงส์','อานซี','บาสเตีย','บูโลญ','แกลร์กมงต์ ฟุต','ดันเคิร์ก','เกรอนอบล์','แก็งก็อง','ลาวาล','มงต์เปลลิเยร์','น็องซี','น็องต์','เรด สตาร์','แซงต์ เอเตียน','เมตซ์','โรเดซ','ปัว','แร็งส์','นีมส์','ชาโตรูซ์']
+};
+const posNames={ST:'กองหน้า',Winger:'ปีก',CM:'กองกลาง',CB:'กองหลัง',GK:'ผู้รักษาประตู'};
+const posWeights={ST:{SHO:4,PAC:2,PHY:2,DRI:1,PAS:1},Winger:{PAC:3,DRI:3,PAS:2,SHO:1,PHY:1},CM:{PAS:3,DRI:2,DEF:1,PHY:2,SHO:1},CB:{DEF:4,PHY:3,PAC:1,PAS:1},GK:{DIV:3,HAN:3,KIC:1,REF:4,SPD:1,POS:3}};
+const outfieldStats=['PAC','SHO','PAS','DRI','DEF','PHY'];const goalkeeperStats=['DIV','HAN','KIC','REF','SPD','POS'];const playerStats=()=>g.pos==='GK'?goalkeeperStats:outfieldStats;
+let g=null,timer=null,elapsed=0,speed=1,running=false,match=null,matchTimer=null;
+const sixNames={PAC:'PAC',SHO:'SHO',PAS:'PAS',DRI:'DRI',DEF:'DEF',PHY:'PHY'};const goalkeeperNames={DIV:'DIV',HAN:'HAN',KIC:'KIC',REF:'REF',SPD:'SPD',POS:'POS'};
+
+/* ===== V7: player generation (realistic body, archetypes, potential, look) ===== */
+const countryInfo={};COUNTRY_DATA.forEach(function(c){var r=REGION_LOOK[c[3]]||REGION_LOOK.seasia;countryInfo[c[0]]={h:c[2],flag:c[1],skin:r.skin,hair:r.hair,eye:r.eye}});
+const posBody={ST:{h:1,bmi:22.6},Winger:{h:-2,bmi:21.7},CM:{h:-1,bmi:22.1},CB:{h:4,bmi:23.3},GK:{h:8,bmi:23}};
+const archetypes={
+ ST:[{id:'poacher',name:'จอมสังหารในเขตโทษ',bias:{SHO:8,PAC:2,PHY:-2}},{id:'target',name:'กองหน้าตัวเป้า',bias:{PHY:9,SHO:3,PAC:-5,DRI:-3}},{id:'speedster',name:'กองหน้าสปีดเร็ว',bias:{PAC:9,DRI:3,PHY:-5}},{id:'complete',name:'กองหน้าครบเครื่อง',bias:{PAS:5,DRI:3,SHO:2}}],
+ Winger:[{id:'dribbler',name:'ปีกเลี้ยงกินตัว',bias:{DRI:9,PAC:3,PHY:-5}},{id:'crosser',name:'ปีกจ่ายบอลโค้ง',bias:{PAS:8,DRI:2,SHO:-3}},{id:'inside',name:'ปีกตัดเข้าในยิงไกล',bias:{SHO:7,DRI:4,DEF:-4}},{id:'speed',name:'ปีกสายฟ้า',bias:{PAC:10,PHY:-4,PAS:-2}}],
+ CM:[{id:'playmaker',name:'เพลย์เมกเกอร์',bias:{PAS:9,DRI:4,PHY:-5,DEF:-3}},{id:'destroyer',name:'ตัวทำลายเกม',bias:{DEF:9,PHY:6,DRI:-4,SHO:-4}},{id:'boxbox',name:'บ็อกซ์ทูบ็อกซ์',bias:{PHY:7,PAC:3,PAS:2}},{id:'shooter',name:'กองกลางยิงไกล',bias:{SHO:8,PAS:2,DEF:-4}}],
+ CB:[{id:'stopper',name:'เซ็นเตอร์แบ็กสายแข็ง',bias:{DEF:7,PHY:8,PAC:-6,PAS:-4}},{id:'sweeper',name:'เซ็นเตอร์อ่านเกม',bias:{DEF:8,PAC:4,PAS:3,PHY:-4}},{id:'ballplaying',name:'เซ็นเตอร์เปิดเกม',bias:{PAS:9,DRI:4,PHY:-4}},{id:'aerial',name:'เซ็นเตอร์ตัวเสาโหม่ง',bias:{PHY:10,DEF:4,PAC:-8}}],
+ GK:[{id:'shotstopper',name:'ผู้รักษาประตูจอมเซฟ',bias:{REF:8,DIV:7,KIC:-5}},{id:'sweeperkeeper',name:'ผู้รักษาประตูสวีปเปอร์',bias:{KIC:9,SPD:6,POS:3,HAN:-4}},{id:'commander',name:'ผู้รักษาประตูคุมพื้นที่',bias:{POS:9,HAN:8,SPD:-5}},{id:'allround',name:'ผู้รักษาประตูรอบด้าน',bias:{HAN:3,POS:3,REF:3,DIV:3}}]};
+const hairColors=['#17171b','#3a2616','#5b3a21','#d2ad5a','#a8431f','#9a9aa2'];
+const skinTones=['#f6d3b3','#e8b98d','#d39a6c','#b07548','#8a5634','#5e3a22'];
+const eyeColors=['#2a1a10','#2f6fa8','#4b8a57'];
+const hairStyles=['short','buzz','spiky','afro','long','mohawk','bald','curly','bun','side'];
+function strHash(str){let h=7;for(const c of str)h=(h*31+c.charCodeAt(0))>>>0;return h}
+function createPlayerProfile(name,num,birth,pos,country){
+ const info=countryInfo[country]||countryInfo['ไทย'],pb=posBody[pos];
+ // ส่วนสูง/น้ำหนักตามสัญชาติ ตำแหน่ง และ BMI (กระจายแบบระฆังคว่ำ)
+ const adultHeight=Math.round(clamp(gauss(info.h+pb.h,5.2),pos==='GK'?178:160,pos==='GK'?206:200));
+ const bmi=clamp(gauss(pb.bmi,.9)+(adultHeight>188?.4:0),19.5,26.5);
+ const adultWeight=Math.round(bmi*Math.pow(adultHeight/100,2));
+ // ศักยภาพ: ส่วนใหญ่ 70-84 นาน ๆ ครั้งจะเจอ 90+
+ const pot=Math.round(clamp(gauss(77,7.5),60,97));
+ const growth=Math.round(clamp(gauss(1,.13),.78,1.28)*100)/100;
+ const arch=pick(archetypes[pos]);
+ const attrs={},caps={};
+ const keys=['PAC','SHO','PAS','DRI','DEF','PHY','DIV','HAN','KIC','REF','SPD','POS'];
+ const w=posWeights[pos];
+ keys.forEach(k=>{
+   const wt=w[k]||0,b=arch.bias[k]||0;
+   attrs[k]=clamp(Math.round(rand(8,16)+(wt?rand(1,4):-rand(0,3))+b*.25),3,40);
+   caps[k]=capFor(pot,wt,b);
+ });
+ const si=pick(info.skin),hi=pick(info.hair);
+ const look={skin:si,hair:hi,eye:pick(info.eye),style:pick(hairStyles),facial:pick(['none','none','none','stubble','beard','moustache']),build:pos==='CB'||pos==='GK'?pick(['avg','broad','broad']):pos==='Winger'?pick(['slim','slim','avg']):pick(['slim','avg','avg','broad']),boots:pick(['#111','#f2f2f2','#ff5a36','#35c3ff','#b6ff3a','#ffd23a']),brow:rand(0,1),seed:rand(1,99999)};
+ if(look.style==='afro'&&si<3&&hi<3&&info.hair.length<3)look.style='curly';
+ if(look.style==='bald')look.facial=pick(['none','beard','stubble']);
+ return {name,num,birth,pos,country,age:0,adultHeight,adultWeight,pot,growth,arch:arch.id,archName:arch.name,caps,look,strongFoot:Math.random()<.78?'ขวา':'ซ้าย',weakFoot:pick([1,2,2,2,3,3,3,4,4,5]),weakFootXp:0,year:birth,monthIndex:0,club:'ศูนย์ฝึกเยาวชนท้องถิ่น',league:'เยาวชน',attrs,health:100,energy:100,happy:75,money:0,training:'balanced',inventory:[],shopCooldown:{},homeTier:0,carTier:0,homeLastMonth:null,carLastMonth:null,relationship:'โสด',stats:{apps:0,goals:0,assists:0,clean:0,trophies:0,awards:[],awardHistory:[],seasons:0,form:0},history:[],academy:false,retired:false,injury:0,injuryRisk:0,midYearDoneYear:0,seasons:[]};
+}
+function capFor(pot,wt,b){if(wt>=3)return 99;if(wt===2)return clamp(Math.round(pot+14+b*.5+rand(-3,3)),72,94);if(wt===1)return clamp(Math.round(pot+5+b*.5+rand(-3,3)),60,86);return clamp(Math.round(pot-10+b*.4+rand(-4,4)),38,68)}
+function migrateSave(){if(!g.seasons)g.seasons=[];
+ if(!g.pot)g.pot=clamp(Math.max(ovr()+12,74),60,97);
+ if(!g.growth)g.growth=1;
+ if(g.capsV!==3){g.capsV=3;g.caps={};const w=posWeights[g.pos]||{};['PAC','SHO','PAS','DRI','DEF','PHY','DIV','HAN','KIC','REF','SPD','POS'].forEach(k=>{const wt=w[k]||0;g.caps[k]=capFor(g.pot,wt,0)})}
+ if(g.caps&&g.attrs)for(const k in g.caps){if(g.attrs[k]>g.caps[k])g.attrs[k]=g.caps[k]}
+ if(!g.arch){const a=archetypes[g.pos][0];g.arch=a.id;g.archName=a.name}
+ if(!g.look){const c=createPlayerProfile(g.name,g.num,g.birth,g.pos,g.country);g.look=c.look}
+ if(!g.adultHeight||g.adultHeight<150){const c=createPlayerProfile(g.name,g.num,g.birth,g.pos,g.country);g.adultHeight=c.adultHeight;g.adultWeight=c.adultWeight}
+ if(!g.weakFoot||g.weakFoot<1)g.weakFoot=rand(1,5);
+}
+function ovr(){let w=posWeights[g.pos],s=0,n=0;for(let k in w){s+=g.attrs[k]*w[k];n+=w[k]}return Math.round(s/n)}
+function ageGrowthMul(a){return a<=12?.8:a<=15?.55:a<=17?.34:a<=21?.3:a<=25?.26:a<=29?.2:.12}
+function addAttribute(k,delta){if(!g||g.age>=34||delta<=0)return;const cap=Math.min((g.caps&&g.caps[k])||99,g.age>=40?94:99),cur=g.attrs[k]||0;if(cur>=cap)return;const f=clamp((cap-cur)/24,.3,1);const potMul=.5+clamp(((g.pot||77)-60)/37,0,1)*1.0;const wt0=(posWeights[g.pos]||{})[k]||0,roleMul=[.4,.65,.85,1,1][Math.min(4,wt0)];const d=delta*f*potMul*roleMul*(g.growth||1)*ageGrowthMul(g.age)*.9;const whole=Math.floor(d);g.attrs[k]=Math.min(cap,cur+whole+(Math.random()<d-whole?1:0))}
+function trainWeakFoot(points=1){if(!g)return;g.weakFootXp=(g.weakFootXp||0)+points;while(g.weakFootXp>=4&&g.weakFoot<5){g.weakFootXp-=4;g.weakFoot++;log('🦶 เท้าข้างไม่ถนัดพัฒนาขึ้นเป็น '+g.weakFoot+' ดาว!')}if(g.weakFoot>=5)g.weakFootXp=0}
+function bodyMetrics(){const hf=[.29,.43,.49,.54,.58,.62,.66,.69,.72,.75,.78,.81,.84,.88,.92,.95,.97,.99,1];const wf=[.05,.14,.19,.24,.29,.34,.39,.44,.49,.54,.59,.64,.69,.75,.81,.88,.94,.98,1];const a=clamp(g.age,0,18);const lo=Math.floor(a),hi=Math.min(18,lo+1),mix=a-lo;return {height:Math.round((g.adultHeight||178)*(hf[lo]+(hf[hi]-hf[lo])*mix)),weight:Math.max(3,Math.round((g.adultWeight||72)*(wf[lo]+(wf[hi]-wf[lo])*mix)*10)/10)}}
+function log(s){let p=document.createElement('p');p.innerHTML=s;$('news').prepend(p)}
+function formError(id,msg){var e=$('formMsg');if(e){e.textContent='⚠️ '+msg;e.style.display='block'}var f=$(id);if(f){try{f.focus();f.style.borderColor='#ff6a6a'}catch(x){}}}
+function newGame(){var fm=$('formMsg');if(fm)fm.style.display='none';['name','number','birth'].forEach(function(i){$(i).style.borderColor=''});let name=$('name').value.trim(),num=+$('number').value,birth=+$('birth').value,pos=$('position').value,country=$('country').value||'ไทย';if(!name||num<1||num>99||birth<1900||birth>2026){formError(!name?'name':(num<1||num>99||!num)?'number':'birth',!name?'กรุณากรอกชื่อ-นามสกุลก่อนเริ่ม':(num<1||num>99||!num)?'เบอร์เสื้อต้องอยู่ระหว่าง 1–99':'ปีเกิดต้องอยู่ระหว่าง 1900–2026');return}
+g=createPlayerProfile(name,num,birth,pos,country);
+elapsed=0;speed=1;running=true;clearInterval(timer);timer=setInterval(tick,100);$('create').classList.add('hidden');$('heroBox').classList.add('hidden');$('game').classList.remove('hidden');$('hud').style.display='grid';$('news').innerHTML='';log('🌱 '+g.name+' เกิดที่'+g.country+' เส้นทางสู่การเป็นตำนานเริ่มต้นขึ้น');setSpeedButtons();render();renderYearEvent();updateClock()}
+function tick(){if(!g||!running||g.retired||match)return;elapsed+=.1*speed;let reached=Math.min(12,Math.floor(elapsed/40*12));while(g.monthIndex<reached){g.monthIndex++;monthlyEvent(g.monthIndex)}if(elapsed>=40){elapsed=0;g.monthIndex=0;completeYear()}updateClock()}
+function monthlyEvent(month){if(g.age>=16){let home=homeOptions[g.homeTier||0],car=carOptions[g.carTier||0];let commuteCost=home.energy===0?0:Math.max(0,home.energy+car.energy-8);g.energy=clamp(g.energy-commuteCost-1);if(month===1&&home.happy)g.happy=clamp(g.happy+Math.round(home.happy/6));}let months=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];let pool=g.age<6?['คุณใช้เวลาวันนี้เล่นและเรียนรู้สิ่งใหม่ ๆ กับครอบครัว','วันนี้คุณได้ออกไปวิ่งเล่นจนเหนื่อย แต่ก็สนุกมาก','ครอบครัวพาคุณไปเดินเล่น ได้เห็นโลกกว้างขึ้น']:g.age<16?['หลังเลิกเรียนคุณแอบซ้อมสัมผัสบอลอยู่หน้าบ้าน','เพื่อนชวนคุณเตะบอลจนฟ้ามืด','คุณดูการแข่งขันฟุตบอลและลองเลียนแบบท่าของนักเตะ','ครูพละชมว่าคุณมีสมาธิและความมุ่งมั่น','วันนี้ฝนตก คุณจึงฝึกควบคุมบอลในบ้าน']:['คุณใช้เวลาฝึกซ้อมและฟื้นฟูร่างกายตามตาราง','สื่อท้องถิ่นพูดถึงพัฒนาการของคุณ','คุณได้พูดคุยกับเพื่อนร่วมทีมและเรียนรู้แท็กติกใหม่','ทีมงานจัดโปรแกรมฟื้นฟูเพื่อรักษาความฟิต','คุณใช้เวลาว่างพักผ่อนกับครอบครัว'];let msg='📅 '+months[month-1]+' • '+pick(pool);log(msg);
+if(!match&&$('decisionModal').classList.contains('hidden'))$('eventArea').innerHTML=`<div class="event"><span class="monthtag">${months[month-1]} • อายุ ${g.age} ปี</span><p>${msg}</p></div>`;
+if(g.age>=6){
+ const trained=pick(playerStats());
+ const gain=rand(2,4);
+ addAttribute(trained,gain);
+ if(month===3||month===9){const second=pick(playerStats());addAttribute(second,rand(1,2));}
+}
+ if(month===6&&g.age>15&&!g.retired&&g.midYearDoneYear!==g.year){g.midYearDoneYear=g.year;showMidYearTraining();}}
+function showDecision(title,desc,choices){running=false;updateClock();$('decisionContent').innerHTML=`<div class="eyebrow">MILESTONE EVENT</div><h2>${title}</h2><p class="muted">${desc}</p>${choices.map(c=>`<button class="choice" onclick="${c.action}"><b>${c.label}</b><small>${c.hint||''}</small></button>`).join('')}`;$('decisionModal').classList.remove('hidden')}
+function closeDecision(){ $('decisionModal').classList.add('hidden');running=true;updateClock()}
+function milestoneLog(msg){g.history.push({year:g.year,age:g.age,club:g.club,note:msg});log(msg);$('eventArea').innerHTML=`<div class="event"><b>⭐ เหตุการณ์สำคัญ • อายุ ${g.age} ปี</b><p>${msg}</p></div>`}
+function handleYouthMilestone(){if(g.age===6){showDecision('อายุ 6 ขวบ • จุดเริ่มต้นของความฝัน','คุณเริ่มหลงรักฟุตบอลมากขึ้น จะใช้เวลาว่างแบบไหนดี?',[
+{label:'⚽ ซื้อลูกฟุตบอลมาเล่นเองที่บ้าน',hint:'ทักษะทั้ง 6 ด้านเพิ่มขึ้นมาก แต่ความสุขเพิ่มเพียงเล็กน้อย',action:"chooseAgeSix('solo')"},
+{label:'🧑‍🤝‍🧑 ไปเล่นฟุตบอลกับเพื่อนที่สนาม',hint:'ทักษะเพิ่มขึ้นเล็กน้อย แต่มีความสุขและมิตรภาพมากขึ้น',action:"chooseAgeSix('friends')"}]);}
+if(g.age===9){showDecision('อายุ 9 ขวบ • ทดสอบทีมเยาวชนระดับเมือง','โค้ชจากทีมเยาวชนในเมืองเห็นแววของคุณและเชิญไปทดสอบฝีเท้า โอกาสติดทีม 100%!',[
+{label:'เข้าทดสอบและเข้าร่วมทีมเยาวชนในเมือง',hint:'โอกาสติดทีม 100% • เริ่มเส้นทางอะคาเดมี่',action:"youthTrial(9,'city')"}]);}
+if(g.age===12){let chance=Math.min(98,Math.max(48,Math.round(ovr()*0.82+27)));showDecision('อายุ 12 ขวบ • คัดตัวระดับภูมิภาค','ทีมเยาวชนระดับภูมิภาคของประเทศเปิดคัดตัว โอกาสติดทีมโดยประมาณ '+chance+'% ขึ้นอยู่กับค่าพลังปัจจุบัน',[
+{label:'ไปทดสอบฝีเท้ากับทีมระดับภูมิภาค',hint:'หากผ่าน จะได้เข้าระบบฝึกซ้อมที่เข้มข้นขึ้น',action:"youthTrial(12,'regional')"},
+{label:'ยังไม่ไปคัดตัว ขอฝึกต่อก่อน',hint:'รักษาสถานะเดิมและพัฒนาฝีเท้าต่อ',action:'skipYouthTrial()'}]);}
+if(g.age===15){let home=Math.min(98,Math.max(50,Math.round(ovr()*0.82+28))),abroad=Math.min(88,Math.max(25,Math.round(ovr()*0.68+14)));showDecision('อายุ 15 ขวบ • โอกาสครั้งสำคัญ','มีสองเส้นทางให้เลือก: ทีมเยาวชนระดับประเทศในบ้านเกิดมีโอกาสติดสูงกว่า ส่วนทีมเยาวชนต่างประเทศมีโอกาสติดน้อยกว่า\n\nโอกาสโดยประมาณ: ในประเทศ '+home+'% • ต่างประเทศ '+abroad+'%',[
+{label:'🏠 ทดสอบทีมเยาวชนระดับประเทศในประเทศ',hint:'โอกาสติดประมาณ '+home+'% • ปรับตามค่าพลัง',action:"youthTrial(15,'national')"},
+{label:'✈️ ทดสอบทีมเยาวชนในต่างประเทศ',hint:'โอกาสติดประมาณ '+abroad+'% • หากผ่านจะได้ย้ายไปต่างแดน',action:"youthTrial(15,'abroad')"},
+{label:'ขอฝึกต่อและยังไม่เข้าทดสอบ',hint:'ยังไม่เลือกเส้นทางในปีนี้',action:'skipYouthTrial()'}]);}}
+
+function showMidYearTraining(){
+ const plans={
+ ST:[
+ ['finishing','🎯 ซ้อมจบสกอร์','SHO +5 • DRI +3',['SHO','DRI'],[3,1]],
+ ['explosive','⚡ วิ่งสปรินต์หาพื้นที่','PAC +5 • PHY +3',['PAC','PHY'],[3,1]],
+ ['hold','🧱 พักบอลและเล่นลูกกลางอากาศ','PHY +5 • SHO +3',['PHY','SHO'],[3,1]],
+ ['link','🤝 เชื่อมเกมกับเพื่อน','PAS +5 • DRI +3',['PAS','DRI'],[3,1]],
+ ['agility','🌀 คล่องตัวในกรอบเขตโทษ','DRI +5 • PAC +3',['DRI','PAC'],[2,2]]],
+ Winger:[
+ ['dribble','🌀 เลี้ยงกินตัว','DRI +5 • PAC +3',['DRI','PAC'],[3,1]],
+ ['cross','🎯 เปิดบอลและครอส','PAS +5 • DRI +3',['PAS','DRI'],[3,1]],
+ ['sprint','⚡ เร่งความเร็วริมเส้น','PAC +5 • PHY +3',['PAC','PHY'],[3,1]],
+ ['inside','🔥 ตัดเข้าในและยิง','SHO +2 • DRI +2',['SHO','DRI'],[2,2]],
+ ['press','🛡️ เพรสซิ่งและช่วยเกมรับ','DEF +5 • PHY +3',['DEF','PHY'],[2,2]]],
+ CM:[
+ ['vision','🧠 วิสัยทัศน์และแทงบอล','PAS +5 • DRI +3',['PAS','DRI'],[3,1]],
+ ['control','🎛️ คุมจังหวะและครองบอล','DRI +5 • PAS +3',['DRI','PAS'],[3,1]],
+ ['engine','🏃 ความอึดแดนกลาง','PHY +5 • PAC +3',['PHY','PAC'],[3,1]],
+ ['longshot','🚀 ยิงไกล','SHO +5 • PHY +3',['SHO','PHY'],[3,1]],
+ ['defmid','🛡️ อ่านเกมและตัดบอล','DEF +5 • PAS +3',['DEF','PAS'],[3,1]]],
+ CB:[
+ ['tackle','🛡️ เข้าปะทะและแท็กเกิล','DEF +5 • PHY +3',['DEF','PHY'],[3,1]],
+ ['pace','⚡ ความเร็วรับมือบอลทะลุช่อง','PAC +5 • DEF +3',['PAC','DEF'],[3,1]],
+ ['aerial','🧱 ลูกกลางอากาศและความแข็งแกร่ง','PHY +5 • DEF +3',['PHY','DEF'],[3,1]],
+ ['build','🎯 วางบอลจากแนวหลัง','PAS +5 • DEF +3',['PAS','DEF'],[3,1]],
+ ['position','🧠 ยืนตำแหน่งและอ่านเกม','DEF +5 • PAC +3',['DEF','PAC'],[2,2]]],
+ GK:[
+ ['reflex','🧤 ปฏิกิริยาเซฟระยะใกล้','REF +5 • DIV +3',['REF','DIV'],[3,1]],
+ ['position','📍 ยืนตำแหน่งและอ่านเกม','POS +5 • REF +3',['POS','REF'],[3,1]],
+ ['dive','🪽 พุ่งปัดลูกยิง','DIV +5 • REF +3',['DIV','REF'],[3,1]],
+ ['distribution','🎯 ออกบอลและเปิดเกม','KIC +5 • POS +3',['KIC','POS'],[3,1]],
+ ['command','🗣️ คุมพื้นที่และลูกกลางอากาศ','HAN +5 • POS +3',['HAN','POS'],[3,2]],['kicking','🦶 เตะเปิดเกมและออกบอล','KIC +5 • SPD +3',['KIC','SPD'],[3,2]]]
+ };
+ const choices=plans[g.pos].map(p=>({label:p[1],hint:p[2],action:`applyMidYearTraining('${p[0]}')`}));
+ showDecision('⚽ กลางฤดูกาล • พัฒนาตัวเอง','เลือกโปรแกรมฝึกพิเศษ 1 จาก '+(g.pos==='GK'?6:5)+' แบบ ซึ่งออกแบบให้เหมาะกับตำแหน่ง '+posNames[g.pos]+' ของคุณ ค่าพลังที่เพิ่มจะแตกต่างกัน',choices);
+}
+function applyMidYearTraining(id){
+ const plans={
+ ST:{finishing:['SHO','DRI'],explosive:['PAC','PHY'],hold:['PHY','SHO'],link:['PAS','DRI'],agility:['DRI','PAC']},
+ Winger:{dribble:['DRI','PAC'],cross:['PAS','DRI'],sprint:['PAC','PHY'],inside:['SHO','DRI'],press:['DEF','PHY']},
+ CM:{vision:['PAS','DRI'],control:['DRI','PAS'],engine:['PHY','PAC'],longshot:['SHO','PHY'],defmid:['DEF','PAS']},
+ CB:{tackle:['DEF','PHY'],pace:['PAC','DEF'],aerial:['PHY','DEF'],build:['PAS','DEF'],position:['DEF','PAC']},
+ GK:{reflex:['REF','DIV'],position:['POS','REF'],dive:['DIV','REF'],distribution:['KIC','POS'],command:['HAN','POS'],kicking:['KIC','SPD']}
+ };
+ const keys=plans[g.pos][id];keys.forEach((k,i)=>addAttribute(k,i===0?5:3));trainWeakFoot(1);
+ g.energy=clamp(g.energy-8);g.happy=clamp(g.happy+3);
+ const labels={finishing:'ซ้อมจบสกอร์',explosive:'วิ่งสปรินต์หาพื้นที่',hold:'พักบอลและเล่นลูกกลางอากาศ',link:'เชื่อมเกมกับเพื่อน',agility:'คล่องตัวในกรอบเขตโทษ',dribble:'เลี้ยงกินตัว',cross:'เปิดบอลและครอส',sprint:'เร่งความเร็วริมเส้น',inside:'ตัดเข้าในและยิง',press:'เพรสซิ่งและช่วยเกมรับ',vision:'วิสัยทัศน์และแทงบอล',control:'คุมจังหวะและครองบอล',engine:'ความอึดแดนกลาง',longshot:'ยิงไกล',defmid:'อ่านเกมและตัดบอล',tackle:'เข้าปะทะและแท็กเกิล',pace:'ความเร็วรับมือบอลทะลุช่อง',aerial:'ลูกกลางอากาศและความแข็งแกร่ง',build:'วางบอลจากแนวหลัง',position:'ยืนตำแหน่งและอ่านเกม',reflex:'ปฏิกิริยาเซฟระยะใกล้',dive:'พุ่งปัดลูกยิง',distribution:'ออกบอลและเปิดเกม',command:'คุมพื้นที่และลูกกลางอากาศ',kicking:'เตะเปิดเกมและออกบอล'};
+ milestoneLog('💪 คุณเลือกฝึก '+labels[id]+' ค่าพลังเฉพาะทางเพิ่มขึ้นตามตำแหน่ง');
+ closeDecision();render();
+}
+function chooseAgeSix(mode){if(mode==='solo'){playerStats().forEach(k=>addAttribute(k,4));g.happy=clamp(g.happy+3);milestoneLog('⚽ คุณได้ลูกฟุตบอลเป็นของตัวเองและฝึกซ้อมที่บ้านทุกวัน ทักษะทั้ง 6 ด้านพุ่งขึ้นอย่างชัดเจน ความสุขเพิ่มขึ้นเล็กน้อย');}else{playerStats().forEach(k=>addAttribute(k,1));g.happy=clamp(g.happy+18);milestoneLog('🧑‍🤝‍🧑 คุณไปเล่นบอลกับเพื่อนที่สนาม ได้ฝึกทักษะพื้นฐานพร้อมเสียงหัวเราะและมิตรภาพ ความสุขเพิ่มขึ้นมาก');}closeDecision();render()}
+function youthTrial(age,type){let chance=type==='city'?100:type==='regional'?Math.min(98,Math.max(48,Math.round(ovr()*.82+27))):type==='national'?Math.min(98,Math.max(50,Math.round(ovr()*.82+28))):Math.min(88,Math.max(25,Math.round(ovr()*.68+14)));let success=rand(1,100)<=chance;let label=type==='city'?'ทีมเยาวชนระดับเมือง':type==='regional'?'ทีมเยาวชนระดับภูมิภาค':type==='national'?'ทีมเยาวชนระดับประเทศ':'ทีมเยาวชนต่างประเทศ';let msg;if(success){g.academy=true;g.club=type==='city'?'อะคาเดมี่เยาวชนประจำเมือง':type==='regional'?'ศูนย์ฝึกเยาวชนระดับภูมิภาค':type==='national'?'ทีมเยาวชนทีมชาติ '+g.country:'อะคาเดมี่เยาวชนต่างประเทศ';g.league='เยาวชน';g.happy=clamp(g.happy+10);msg='🎉 ผ่านการคัดตัว! คุณได้เข้าร่วม'+label+' ('+g.club+')';}else{g.happy=clamp(g.happy-4);msg='💪 วันนี้ยังไม่ผ่านการคัดตัวกับ'+label+' โค้ชแนะนำให้กลับไปพัฒนาฝีเท้าและลองใหม่ในอนาคต';}milestoneLog(msg+' • โอกาส '+chance+'%');closeDecision();render()}
+function skipYouthTrial(){milestoneLog('คุณตัดสินใจยังไม่เข้าทดสอบฝีเท้าในครั้งนี้ และเลือกพัฒนาตัวเองต่อไป');closeDecision();render()}
+function updateClock(){$('yearProgress').style.width=(elapsed/40*100)+'%';$('timeLabel').textContent=elapsed.toFixed(1)+' / 40 วินาที';$('hClock').textContent=running?'เดิน x'+speed:'หยุด';$('pauseBtn').textContent=running?'Ⅱ หยุด':'▶ เดินต่อ';}
+function togglePause(){if(!g)return;running=!running;updateClock()}
+function setSpeed(v){speed=v;setSpeedButtons();updateClock()}
+function setSpeedButtons(){document.querySelectorAll('.speed').forEach(b=>b.classList.toggle('active',+b.dataset.speed===speed))}
+document.querySelectorAll('.speed').forEach(b=>b.addEventListener('click',()=>setSpeed(+b.dataset.speed)));
+function advanceYear(){
+ if(!g||g.retired)return;
+ if(match){toast('จัดการจังหวะแข่งขันที่ค้างอยู่ก่อน');return}
+ if(!$('decisionModal').classList.contains('hidden'))return;
+ while(g.monthIndex<12){
+   g.monthIndex++;monthlyEvent(g.monthIndex);
+   if(!$('decisionModal').classList.contains('hidden')){elapsed=g.monthIndex/12*40;updateClock();return}
+ }
+ elapsed=0;g.monthIndex=0;completeYear();
+}
+function completeYear(){if(g.retired)return;g.age++;g.year++;g.energy=clamp(g.energy+52);g.health=clamp(g.health+rand(4,9));if(g.injury>0){g.injury--;g.health=clamp(g.health+8);log('🩹 ฟื้นฟูอาการบาดเจ็บ เหลือ '+g.injury+' ปี')}
+if(g.age<=15){juvenileYear();handleYouthMilestone()}else professionalYear();
+ if(g.age>=40&&!g.retired)retire(true);render();updateClock()}
+function renderYearEvent(){ $('eventArea').innerHTML=`<div class="event"><b>บทเริ่มต้น • อายุ 0 ปี</b><p>คุณเพิ่งเกิดมาในครอบครัวธรรมดา เวลาในเกมจะเดินเองทุก 40 วินาทีเท่ากับ 1 ปี สามารถหยุดหรือเร่งเวลาได้เสมอ</p></div>`}
+function juvenileYear(){let ev=pick(['school','practice','family']);let msg='';if(ev==='school'){g.happy=clamp(g.happy+rand(-3,5));msg='📚 คุณได้เรียนรู้วินัยและการทำงานเป็นทีมจากโรงเรียน'}if(ev==='practice'){let k=pick(playerStats());addAttribute(k,rand(3,5));msg='⚽ ฝึกฟุตบอลหลังเลิกเรียน ค่าพลัง '+k+' ค่อย ๆ พัฒนาขึ้น'}if(ev==='family'){g.happy=clamp(g.happy+4);msg='🏡 ครอบครัวสนับสนุนความฝันของคุณ'}$('eventArea').innerHTML=`<div class="event"><b>ชีวิตวัยเยาว์ • อายุ ${g.age}</b><p>${msg}</p></div>`;g.history.push({year:g.year,age:g.age,club:g.club,note:msg});log(msg)}
+function professionalYear(){if(g.age>=30&&g.age<34){['PAC','SPD'].forEach(k=>{g.attrs[k]=Math.max(0,g.attrs[k]-1)})}if(g.age>=34){playerStats().forEach(k=>g.attrs[k]=Math.max(0,(g.attrs[k]||0)-1));if(g.age>=40)playerStats().forEach(k=>g.attrs[k]=Math.min(94,g.attrs[k]));log('📉 อายุ '+g.age+' ปี: ค่าพลังหลักลดลง 1 แต้มตามวัย และการฝึกไม่สามารถเพิ่มค่าพลังหลักได้อีก'+(g.age>=40?' • เพดานค่าพลังอยู่ที่ 94':'') )}else{let development=g.age<=21?rand(5,7):g.age<=25?rand(4,6):g.age<=30?rand(3,5):rand(2,4);let focus=posWeights[g.pos];Object.keys(focus).forEach(k=>addAttribute(k,Math.max(0,Math.round(development*focus[k]/4))))}if(g.age===16){g.league=pick(['แชมเปียนชิพ อังกฤษ','ลา ลีกา 2 สเปน','เซเรียบี อิตาลี','บุนเดสลีกา 2 เยอรมนี','ลีกเดอซ์ ฝรั่งเศส']);g.club=pick(clubs[g.league]);g.money+=90000;log('📝 เซ็นสัญญาอาชีพฉบับแรกกับ '+g.club)}
+const topL=['พรีเมียร์ลีก อังกฤษ','ลาลีกา สเปน','เซเรียอา อิตาลี','บุนเดสลีกา เยอรมนี','ลีกเอิง ฝรั่งเศส'].includes(g.league);let salary=Math.round(Math.pow(ovr()/100,6)*9000000*(topL?1.6:.7)*(g.age<18?.35:1)*(rand(90,110)/100)/1000)*1000;g.money+=salary;let upkeep=Math.round((salary*.2+[0,40000,120000,900000][g.homeTier||0]+[0,30000,150000,700000][g.carTier||0])/1000)*1000;let paid=Math.min(g.money,upkeep);g.money-=paid;log('🧾 ค่าใช้จ่ายประจำปี (ค่าครองชีพ ภาษี ค่าดูแลบ้านและรถ) '+money(paid));g.stats.seasons++;let games=rand(25,36);let scored=0,assisted=0,clean=0;
+let trainingBonus=applyTraining();g.energy=clamp(g.energy-trainingBonus.energyCost);g.health=clamp(g.health-trainingBonus.healthCost);
+match={gameNo:1,total:3,goals:0,conceded:0,scored:0,assisted:0,clean:0,form:6,seasonGames:games,salary,trainingBonus};$('matchArea').innerHTML='';showInterview('pre',function(){startMatchMoment()});log('💼 ค่าเหนื่อยฤดูกาลนี้ '+money(salary)+' • แผนฝึก: '+trainingBonus.label)}
+function applyTraining(){let t=g.training,keys=playerStats(),bonus={label:'ฝึกสมดุล',energyCost:18,healthCost:2};let inc=(k,n)=>addAttribute(k,n);
+if(t==='balanced'){keys.forEach(k=>inc(k,rand(3,5)));bonus.label='สมดุล';bonus.energyCost=20;bonus.healthCost=2}
+if(t==='position'){let map={ST:['SHO','PAC','PHY'],Winger:['PAC','DRI','PAS'],CM:['PAS','DRI','PHY'],CB:['DEF','PHY','PAC'],GK:['REF','POS','DIV','HAN','KIC','SPD']};map[g.pos].forEach(k=>inc(k,rand(4,6)));bonus.label='เน้นตำแหน่ง';bonus.energyCost=27;bonus.healthCost=4}
+if(t==='technical'){(g.pos==='GK'?['HAN','KIC','POS']:['DRI','SHO','PAS']).forEach(k=>inc(k,rand(4,6)));bonus.label='เน้นเทคนิค';bonus.energyCost=32;bonus.healthCost=5}
+if(t==='physical'){(g.pos==='GK'?['SPD','DIV']:['PAC','PHY']).forEach(k=>inc(k,rand(4,6)));bonus.label='เน้นร่างกาย';bonus.energyCost=36;bonus.healthCost=7}
+if(t==='light'){keys.forEach(k=>inc(k,Math.random()<.9?3:2));bonus.label='ฝึกเบามาก';bonus.energyCost=6;bonus.healthCost=0}
+trainWeakFoot(1);
+if(g.energy<bonus.energyCost){bonus.energyCost=Math.ceil(bonus.energyCost*.55);log('⚠️ พลังงานไม่พอสำหรับโปรแกรมเต็ม ความเข้มข้นการฝึกจึงลดลง')}
+return bonus}
+function actionChance(stats){let avg=stats.reduce((sum,k)=>sum+(g.attrs[k]||40),0)/stats.length;return Math.round(clamp(35+(avg-40)*1.35,8,96));}
+function sampleChoices(list,count){const pool=list.slice(),out=[];while(out.length<count&&pool.length){const index=rand(0,pool.length-1);out.push(pool.splice(index,1)[0])}return out}
+function startMatchMoment(){if(!match||g.retired)return;if(match.gameNo===1&&g.banNext){g.banNext=false;match.curMinute=0;recordMoment('🚫 ติดโทษแบน','พลาดเกมนี้เพราะใบแดงจากฤดูกาลที่แล้ว',null);nextMatchMoment();return}let minute=rand(8,31)+match.gameNo*20;match.curMinute=minute;let options=matchChoices();options.choices=sampleChoices(options.choices,g.pos==='GK'?3:2);if(g.pos!=='GK')options.choices.push({label:'🛡️ เล่นแบบเพลย์เซฟ',hint:'เล่นรัดกุม ไม่เสี่ยง ไม่เปลี่ยนสกอร์หรือค่าสถานะ',safePlay:true,stats:[],chance:100});match.current=options;match.opp=pick(['คู่แข่งร่วมลีก','ทีมจ่าฝูง','คู่ปรับสำคัญ','ทีมเยือน']);drawMatchPanel();running=false;updateClock()}
+
+function energyAdjust(ch){const e=g.energy;if(e<10)return 1;if(e<50)return Math.max(1,Math.round(ch*.5));return ch}
+function energyBanner(){const e=Math.round(g.energy);let col,msg;if(e<10){col='#ff6a6a';msg='⚡ พลังงานเกือบหมด ('+e+'/100) • โอกาสสำเร็จของทุกแอ็คชั่นเหลือ 1% (เพลย์เซฟยังสำเร็จ 100%) • ไปแท็บ "ร้านค้า" เพื่อฟื้นพลังงาน'}else if(e<50){col='#ffb347';msg='⚡ พลังงานต่ำ ('+e+'/100) • โอกาสสำเร็จลดลง 50% • แอ็คชั่นละ −5 พลังงาน (เพลย์เซฟไม่เสีย) • ซื้อของฟื้นพลังงานในแท็บ "ร้านค้า" ได้'}else{col='#6df0ae';msg='⚡ พลังงาน '+e+'/100 • ปกติ • แอ็คชั่นละ −5 พลังงาน (เพลย์เซฟไม่เสียพลังงาน)'}return '<div style="margin:6px 0;padding:8px 12px;border-radius:12px;border:1px solid '+col+'88;background:'+col+'1f;color:'+col+';font-weight:800;font-size:14px">'+msg+'</div>'}
+function drawMatchPanel(){if(!match||!match.current)return;const options=match.current;$('matchArea').innerHTML=`<div class="panel match-panel"><div class="match-head"><div><span class="eyebrow">LIVE CAREER MOMENT</span><h3>🏟️ MATCH DAY • นัดที่ ${match.gameNo}/${match.total}</h3></div><span class="pill">อายุ ${g.age}</span></div><div class="matchscore">${match.goals} <span>—</span> ${match.conceded}</div><div class="muted" style="text-align:center">นาที ${match.curMinute}' • ${g.club} vs ${match.opp}</div>${energyBanner()}<div class="event"><b>${options.story}</b><p class="muted">เลือกแอ็คชั่นที่เหมาะกับจังหวะนี้ • เปอร์เซ็นต์คำนวณจากค่าพลังที่ใช้จริง</p></div><div id="matchChoices" class="match-options">${options.choices.map((c,i)=>`<button class="choice match-choice" onclick="resolveMatch(${i})"><span class="choice-main"><b>${c.label}</b><small>${c.hint}</small></span><span class="chance ${c.safePlay?'sure':''}">${c.safePlay?100:energyAdjust(c.chance)}%<small>สำเร็จ</small></span></button>`).join('')}</div><div class="muted">มี ${options.choices.length} ทางเลือก${g.pos==='GK'?' • เซฟแล้วมีโอกาสสวนกลับทำประตู':''}</div></div>`;}
+function toast(msg){let t=$('toastBox');if(!t)return;t.textContent=msg;t.style.opacity='1';clearTimeout(window._tt);window._tt=setTimeout(function(){t.style.opacity='0'},2600)}
+function makeAction(label,hint,stats,kind,extra={}){let ch=actionChance(stats);if(kind==='assist')ch=Math.min(96,ch+18);if(extra.header)ch=clamp(Math.round(ch*.42),5,34);return {label,hint,stats,[kind]:true,...extra,chance:ch}}
+function matchChoices(){let p=g.pos;if(p==='ST')return{story:'บอลทะลุช่องหลุดไปถึงคุณ! ผู้รักษาประตูออกมาปิดมุมอย่างรวดเร็ว',choices:[makeAction('ยิงเต็มข้อไปเสาแรก','ใช้พลังยิง (SHO)',['SHO'],'goal'),makeAction('แปเล่นทางไปเสาไกล','ใช้ความนิ่งและการยิง (SHO/DRI)',['SHO','DRI'],'goal'),makeAction('แตะหลบผู้รักษาประตูแล้วยิง','ใช้การเลี้ยงบอลและยิง (DRI/SHO)',['DRI','SHO'],'goal'),makeAction('ไหลบอลให้เพื่อนที่เติมขึ้นมา','ใช้การจ่ายบอล (PAS)',['PAS'],'assist'),makeAction('แทงทะลุช่องตัดแนวรับ','ใช้วิสัยทัศน์และจ่ายบอล (PAS/DRI)',['PAS','DRI'],'assist'),makeAction('พักบอลรอเพื่อนเติมแล้วจ่าย','ใช้การครองบอลและจ่าย (PHY/PAS)',['PHY','PAS'],'assist')]};
+if(p==='Winger')return{story:'คุณได้บอลริมเส้นและมีพื้นที่ดวลกับฟูลแบ็กคู่แข่ง',choices:[makeAction('ตัดเข้าในแล้วปั่นโค้ง','เลี้ยงบอล + ยิง (DRI/SHO)',['DRI','SHO'],'goal'),makeAction('กระชากสุดเส้นก่อนยิงมุมแคบ','ความเร็ว + ยิง (PAC/SHO)',['PAC','SHO'],'goal'),makeAction('เปิดบอลโค้งเข้าหัวกองหน้า','เปิดบอล (PAS)',['PAS'],'assist'),makeAction('หักเรียดเข้ากลางให้เพื่อนยิง','จ่ายบอลแม่นยำ (PAS/DRI)',['PAS','DRI'],'assist'),makeAction('เลี้ยงตัดแนวรับแล้วแทงช่อง','เทคนิคและวิสัยทัศน์ (DRI/PAS)',['DRI','PAS'],'assist'),makeAction('วิ่งอ้อมหลังแนวรับรับบอลคืน','ความเร็วและการเคลื่อนที่ (PAC/DRI)',['PAC','DRI'],'goal')]};
+if(p==='CM')return{story:'คุณรับบอลหน้ากรอบเขตโทษ เห็นแนวรับคู่แข่งกำลังเสียตำแหน่ง',choices:[makeAction('แทงทะลุช่องให้กองหน้า','จ่ายบอลทะลุแนวรับ (PAS)',['PAS'],'assist'),makeAction('วางบอลยาวเปลี่ยนแกน','จ่ายบอลและอ่านเกม (PAS/DRI)',['PAS','DRI'],'assist'),makeAction('ลองยิงไกลทันที','พลังยิง (SHO)',['SHO'],'goal'),makeAction('ยิงปั่นโค้งนอกกรอบ','ยิงและเทคนิค (SHO/DRI)',['SHO','DRI'],'goal'),makeAction('เลี้ยงแหวกเข้าเขตโทษ','เลี้ยงบอลและความเร็ว (DRI/PAC)',['DRI','PAC'],'goal'),makeAction('เล่นชิ่งหนึ่งสองเจาะกลาง','จ่ายบอลและคุมบอล (PAS/DRI)',['PAS','DRI'],'assist')]};
+if(p==='CB')return{story:'กองหน้าคู่แข่งพาบอลพุ่งเข้าเขตโทษ คุณเป็นด่านสุดท้ายก่อนถึงผู้รักษาประตู',choices:[makeAction('เข้าสกัดเด็ดขาด','เกมรับ (DEF)',['DEF'],'defend',{risk:true}),makeAction('ยืนคุมพื้นที่และอ่านทางบอล','เกมรับและร่างกาย (DEF/PHY)',['DEF','PHY'],'defend'),makeAction('เบียดแย่งบอลจากด้านข้าง','ความแข็งแกร่ง (PHY)',['PHY'],'defend'),makeAction('ดักตัดบอลก่อนบอลถึงกองหน้า','อ่านเกมและยืนตำแหน่ง (DEF/PAC)',['DEF','PAC'],'defend'),makeAction('เร่งสปีดตามประกบ','ความเร็วและเกมรับ (PAC/DEF)',['PAC','DEF'],'defend'),makeAction('โหม่งสกัดลูกเปิด','ลูกกลางอากาศและร่างกาย (PHY/DEF)',['PHY','DEF'],'defend'),makeAction('เคลียร์บอลพ้นเขตโทษ','เกมรับ (DEF/PHY) • มีโอกาสสวนกลับได้ประตู',['DEF','PHY'],'defend',{clear:true}),makeAction('ขึ้นโหม่งทำประตูจากลูกเซ็ตพีซ','โหม่งยิงประตู (PHY/SHO) • โอกาสน้อย',['PHY','SHO'],'goal',{header:true})]};
+return{story:'กองหน้าคู่แข่งหลุดเดี่ยวเข้ามาเผชิญหน้าคุณในกรอบเขตโทษ',choices:[{label:'พุ่งออกไปปิดมุมยิง',hint:'ใช้ปฏิกิริยา + พุ่งเซฟ (REF/DIV)',stats:['REF','DIV'],save:true,chance:actionChance(['REF','DIV'])},{label:'ยืนคุมเส้น รออ่านทิศทางบอล',hint:'ใช้การยืนตำแหน่ง (POS)',stats:['POS'],save:true,chance:actionChance(['POS'])},{label:'ออกมาตัดบอลก่อนถึงเท้า',hint:'ใช้การอ่านเกม (POS) • เสี่ยงเสียประตู',stats:['POS'],save:true,risk:true,chance:actionChance(['POS'])},{label:'ปัดบอลออกด้านข้างด้วยปลายนิ้ว',hint:'ใช้ปฏิกิริยา (REF)',stats:['REF'],save:true,chance:actionChance(['REF'])},{label:'พุ่งปัดลูกยิงมุมไกล',hint:'ใช้การพุ่งเซฟ (DIV)',stats:['DIV'],save:true,chance:actionChance(['DIV'])},{label:'ออกมาตัดลูกครอสกลางอากาศ',hint:'ใช้ตำแหน่งและร่างกาย (POS/PHY)',stats:['POS','PHY'],save:true,chance:actionChance(['POS','PHY'])}]}}
+function resolveMatch(i){if(!match||!match.current)return;let c=match.current.choices[i];if(c.safePlay){$('matchChoices').innerHTML=`<div class="event"><b>🛡️ คุณเลือกเล่นแบบเพลย์เซฟ</b><p class="muted">สำเร็จ 100% • คุณเล่นอย่างรัดกุม ไม่มีการเปลี่ยนแปลงสกอร์ สถิติ หรือฟอร์มการแข่งขัน</p><button onclick="nextMatchMoment()">ไปยังจังหวะถัดไป →</button></div>`;recordMoment(c.label,'🛡️ เล่นแบบเพลย์เซฟ • ไม่มีการเปลี่ยนแปลงสกอร์หรือสถิติ',null);afterMoment();return}const effChance=energyAdjust(c.chance);let success=rand(1,100)<=effChance;g.energy=clamp(g.energy-5);let text='';if(c.goal){if(success){match.goals++;match.scored++;text='⚽ สวยงาม! จังหวะจบสกอร์เฉียบขาด บอลพุ่งเข้าตาข่าย';}else{text='โอกาสทองหลุดลอย! ผู้รักษาประตูป้องกันไว้ได้';}}else if(c.assist){if(success){match.assisted++;match.goals++;text='🎯 จ่ายบอลทะลุแนวรับ เพื่อนร่วมทีมเข้าชาร์จไม่พลาด! แอสซิสต์สำเร็จ ทีมได้ประตู';}else{text='บอลถูกตัดได้ก่อนถึงเพื่อนร่วมทีม';}}else if(c.defend){if(success){match.clean++;text='🛡️ อ่านเกมขาด! คุณหยุดเกมรุกคู่แข่งได้อย่างยอดเยี่ยม';let cc=clamp(Math.round((c.clear?24:10)+(ovr()-50)*.4),8,48);if(rand(1,100)<=cc){match.goals++;if(rand(1,100)<=35){match.assisted++;text+=' • ทีมเปิดเกมสวนกลับทันที และคุณเป็นคนแอสซิสต์ประตู! ('+cc+'%)'}else text+=' • ทีมเปิดเกมสวนกลับทันทีจนได้ประตู! ('+cc+'%)'}}else{match.conceded++;text='คู่แข่งหลุดผ่านไปได้และยิงประตูสำเร็จ';}}else if(c.save){if(success){match.clean++;let counterChance=clamp(Math.round(25+(ovr()-50)*0.65),25,75);if(rand(1,100)<=counterChance){match.goals++;text='🧤 ซูเปอร์เซฟ! คุณปัดบอลพ้นอันตราย ก่อนทีมเปิดเกมสวนกลับและทำประตูได้! (โอกาสสวนกลับ '+counterChance+'%)';}else{text='🧤 ซูเปอร์เซฟ! คุณปิดมุมและปัดบอลพ้นอันตราย ทีมยังไม่ได้ประตูจากจังหวะสวนกลับ (โอกาส '+counterChance+'%)';}}else{match.conceded++;text='บอลผ่านมือคุณเข้าประตูไปอย่างน่าเสียดาย';}}match.form+=success?1.5:-.45;const cardInfo=rollCard(c);if(cardInfo)applyCard(cardInfo);$('matchChoices').innerHTML=`<div class="event"><b>${text}</b><p class="muted">โอกาสก่อนเลือก ${effChance}% • ผลลัพธ์: ${success?'สำเร็จ':'ไม่สำเร็จ'} • ค่าฟอร์ม ${success?'+1.5':'-0.45'} • พลังงาน −5 (เหลือ ${Math.round(g.energy)})</p><button onclick="nextMatchMoment()">${match.gameNo>=match.total?'ไปสรุปฤดูกาล →':'ไปยังจังหวะถัดไป →'}</button></div>`;recordMoment(c.label,text+(cardInfo?' • '+(cardInfo.type==='red'?'🟥 ใบแดง':'🟨 ใบเหลือง')+': '+cardInfo.reason:''),success);render();if(cardInfo)showCardPopup(cardInfo,function(){afterMoment()});else afterMoment()}
+
+
+const IV_PRE=[{"q": "ผู้สื่อข่าวถามว่า \"คุณมั่นใจแค่ไหนกับเกมนี้\"", "ok": "ผมพร้อมเต็มที่ และเคารพคู่แข่งครับ", "bad": ["คู่แข่งเล็กน้อย ผมคนเดียวก็เอาชนะได้", "ผมไม่อยากพูดอะไรทั้งนั้น", "ถ้าแพ้ก็โทษผู้ตัดสินละกัน"]}, {"q": "สื่อถามถึงแรงกดดันจากแฟนบอลที่คาดหวังสูง", "ok": "แรงกดดันคือพลังครับ ผมอยากตอบแทนแฟนๆ", "bad": ["ผมไม่สนใจแฟนบอลหรอก", "แฟนๆ คาดหวังเยอะเกินไปแล้ว", "แรงกดดันมากจนผมนอนไม่หลับ"]}, {"q": "ผู้จัดการทีมประกาศให้คุณเป็นตัวหลักในเกมนี้ คุณรู้สึกอย่างไร", "ok": "ผมขอบคุณโค้ชและจะทำเพื่อทีมเต็มที่", "bad": ["โค้ชควรวางผมมาตั้งนานแล้ว", "ผมเก่งกว่าเพื่อนร่วมทีมทุกคน", "ตัวหลักหรือไม่ก็เหมือนกัน"]}, {"q": "สื่อถามถึงเพื่อนร่วมทีมที่บาดเจ็บและพลาดเกมนี้", "ok": "เราจะช่วยกันเติมเต็ม และส่งกำลังใจให้เขา", "bad": ["ไม่มีเขา ทีมก็เล่นได้ดีกว่าเดิม", "ผมไม่รู้เรื่องนี้", "นั่นเป็นเรื่องของแพทย์ทีม ไม่เกี่ยวกับผม"]}, {"q": "สื่อถามถึงสภาพร่างกายของคุณก่อนเกม", "ok": "ผมเตรียมตัวมาอย่างดี พร้อมลงสนามครับ", "bad": ["ผมเจ็บนิดหน่อยแต่ไม่บอกใคร", "ผมเหนื่อยมากจนไม่อยากเล่น", "ผมไม่ต้องซ้อมก็ชนะได้"]}, {"q": "คุณคิดอย่างไรกับคู่แข่งในวันนี้", "ok": "เป็นทีมที่แข็งแกร่ง เราต้องเล่นเป็นทีมและระวังตัว", "bad": ["ทีมกระจอก ไม่ต้องกลัว", "ผมไม่เคยดูเกมของเขาเลย", "ผมกลัวเขามากเลย"]}, {"q": "เป้าหมายส่วนตัวของคุณในเกมนี้คืออะไร", "ok": "ให้ทีมชนะก่อน เรื่องส่วนตัวมาทีหลัง", "bad": ["ผมต้องยิงให้ได้ 3 ประตู", "ผมอยากให้ทุกคนเห็นว่าผมเก่งที่สุด", "ผมอยากให้เกมจบเร็วๆ"]}, {"q": "สื่อถามว่าข่าวลือการย้ายทีมของคุณเป็นความจริงไหม", "ok": "ตอนนี้ผมโฟกัสกับสโมสรนี้เท่านั้นครับ", "bad": ["ใครให้เงินเยอะกว่า ผมไปหมด", "ผมเบื่อสโมสรนี้แล้ว", "อย่ามาถามเรื่องนี้อีก!"]}, {"q": "แฟนบอลมารอให้กำลังใจที่หน้าสนาม คุณจะพูดว่าอะไร", "ok": "ขอบคุณทุกกำลังใจ ผมจะสู้เต็มที่", "bad": ["ถ้าเก่งนักก็มาเล่นเองสิ", "ผมไม่ได้ยินอะไรเลย", "เสียงดังหนวกหูจริงๆ"]}, {"q": "สื่อถามถึงแผนการเล่นของทีมในเกมนี้", "ok": "ผมเชื่อมั่นในแผนของโค้ช และจะทำตามหน้าที่", "bad": ["ผมจะเล่นตามใจตัวเอง", "แผนอะไรก็ได้ ไม่สำคัญ", "ผมไม่ได้ฟังตอนประชุมทีม"]}, {"q": "สื่อถามว่าคุณกังวลกับสภาพสนามที่ลื่นไหม", "ok": "สนามเป็นแบบเดียวกันทั้งสองทีม เราปรับตัวและเล่นให้เต็มที่", "bad": ["สนามห่วยแบบนี้ ผมไม่อยากเล่น", "ถ้าบาดเจ็บ ทางสโมสรต้องรับผิดชอบ", "ผมจะเล่นแบบไม่เสี่ยงเลยทั้งเกม"]}, {"q": "สื่อถามว่าคุณเตรียมรับมือการประกบตัวต่อตัวอย่างไร", "ok": "ผมจะเล่นอย่างใจเย็น และใช้เพื่อนร่วมทีมช่วยกัน", "bad": ["ถ้าเขาเข้าหนักผมก็ตอบโต้หนักกว่า", "ผมจะหลบเลี่ยงลูกบอลทุกครั้ง", "ผู้ตัดสินต้องปกป้องผม ไม่งั้นผมไม่เล่น"]}];
+const IV_POST=[{"q": "สื่อถามว่าคุณคิดอย่างไรกับผลการแข่งขันวันนี้", "ok": "ทุกคนทำเต็มที่ เราจะเรียนรู้และพัฒนาต่อไป", "bad": ["ทีมที่เหลือแย่มาก ผมเล่นคนเดียว", "ผู้ตัดสินแย่ ผมไม่อยากพูดถึง", "ผมไม่สนใจผลนัดนี้"]}, {"q": "สื่อถามถึงฟอร์มส่วนตัวของคุณในเกมนี้", "ok": "ยังมีหลายจุดที่ผมต้องปรับปรุงครับ", "bad": ["ผมเล่นสมบูรณ์แบบ ไม่มีที่ติ", "ผมเล่นไม่ดีเพราะเพื่อนทั้งนั้น", "ผมไม่ได้ดูฟอร์มตัวเองเลย"]}, {"q": "สื่อถามถึงแฟนบอลที่มาให้กำลังใจตลอดเกม", "ok": "ขอบคุณแฟนๆ ทุกคนที่อยู่เคียงข้างเรา", "bad": ["ไม่มีแฟนๆ ผมก็เล่นได้", "บางคนร้องเพลงไม่เพราะเลย", "ผมไม่ได้สังเกตเลย"]}, {"q": "สื่อถามถึงจังหวะที่ผู้ตัดสินถูกวิจารณ์", "ok": "ผมเคารพการตัดสินครับ ทุกคนก็ทำงานหนัก", "bad": ["ผู้ตัดสินเข้าข้างคู่แข่งชัดเจน", "ผมจะฟ้องสมาคม", "ต้องไล่ผู้ตัดสินออกให้หมด"]}, {"q": "สื่อถามถึงคู่แข่งหลังจบเกม", "ok": "คู่แข่งเล่นได้ดี ผมขอชื่นชมเขา", "bad": ["คู่แข่งสกปรกที่สุดที่เคยเจอ", "ผมลืมไปแล้วว่าเจอใคร", "พวกเขาแค่โชคดีเท่านั้น"]}, {"q": "สื่อถามถึงโค้ชและแผนการเล่นของทีม", "ok": "โค้ชวางแผนมาดี ผมแค่ทำตามหน้าที่", "bad": ["แผนนี้ห่วยมาก", "ครั้งหน้าผมจะเล่นแบบของผมเอง", "โค้ชไม่รู้เรื่องฟุตบอลเลย"]}, {"q": "สื่อถามถึงการเตรียมตัวสำหรับนัดต่อไป", "ok": "เราจะพักฟื้น เตรียมตัว แล้วมุ่งหน้าสู้นัดต่อไป", "bad": ["ผมไม่อยากเล่นนัดต่อไปแล้ว", "นัดต่อไปแพ้แน่ ผมรู้", "ถ้าไม่ได้ลงตัวจริง ผมไม่เล่น"]}, {"q": "สื่อถามถึงเพื่อนร่วมทีมที่ทำพลาดในเกมนี้", "ok": "ทุกคนพลาดได้ เราต้องช่วยกันแก้ไขเป็นทีม", "bad": ["เขาทำให้เราเสียเปรียบ ควรโดนลงโทษ", "ผมจะไม่คุยกับเขาอีกแล้ว", "ไม่เกี่ยวกับผม ผมไม่สนใจ"]}, {"q": "สื่อถามถึงสภาพร่างกายของคุณหลังจบเกม", "ok": "เหนื่อยแต่ภูมิใจ ผมจะพักฟื้นให้เต็มที่", "bad": ["ผมแทบไม่เหนื่อยเลย ซ้อมต่อได้ทันที", "ผมเจ็บหนักแต่จะซ่อนไว้", "ผมจะเลิกเล่นฟุตบอล"]}, {"q": "สื่อถามว่าคุณอยากบอกอะไรกับแฟนๆ", "ok": "ขอบคุณที่เชื่อมั่นในตัวผม ผมจะไม่ทำให้ผิดหวัง", "bad": ["ไม่มีอะไรจะบอก", "อย่าคาดหวังกับผมมากนัก", "ซื้อเสื้อผมเยอะๆ ด้วยนะ"]}, {"q": "สื่อถามว่าคุณพอใจกับการเล่นร่วมกับเพื่อนร่วมทีมแค่ไหน", "ok": "เรามีเคมีที่ดีขึ้นเรื่อยๆ และยังต้องพัฒนาร่วมกัน", "bad": ["ผมเล่นกับใครก็ได้ ไม่สำคัญ", "ทุกคนช้าเกินไปสำหรับผม", "ผมอยากเปลี่ยนเพื่อนร่วมทีมทั้งหมด"]}, {"q": "สื่อถามว่าผลเกมนี้จะส่งผลต่อการแข่งขันลีกอย่างไร", "ok": "ทุกแต้มสำคัญ เราจะสู้ต่อทีละเกมครับ", "bad": ["ลีกนี้จบไปแล้ว ไม่ต้องสู้ต่อ", "ผมไม่ได้ดูตารางคะแนนเลย", "ถ้าไม่ได้แชมป์ ก็โทษคนอื่น"]}];
+function shuffleArr(a){a=a.slice();for(let i=a.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[k];a[k]=t}return a}
+function pickInterview(kind){const pool=kind==='pre'?IV_PRE:IV_POST;g.ivUsed=g.ivUsed||{pre:[],post:[]};if(!g.ivUsed[kind])g.ivUsed[kind]=[];if(g.ivUsed[kind].length>=pool.length)g.ivUsed[kind]=[];const avail=[];for(let i=0;i<pool.length;i++)if(g.ivUsed[kind].indexOf(i)<0)avail.push(i);const idx=avail[rand(0,avail.length-1)];g.ivUsed[kind].push(idx);return pool[idx]}
+function showInterview(kind,cb){
+ if(!g||g.retired){cb();return}
+ const q=pickInterview(kind),wrong=shuffleArr(q.bad).slice(0,2),opts=shuffleArr([{t:q.ok,ok:true},{t:wrong[0],ok:false},{t:wrong[1],ok:false}]);
+ window.iv={kind:kind,q:q,opts:opts,cb:cb,done:false};
+ const head=kind==='pre'?'🎤 สัมภาษณ์ก่อนเกม':'🎤 สัมภาษณ์หลังเกม';
+ const ctx=kind==='post'&&match?'<p class="muted" style="margin:0 0 6px">สกอร์ทีมจากจังหวะที่คุณเล่น '+match.goals+' — '+match.conceded+'</p>':'';
+ $('decisionContent').innerHTML='<div class="eyebrow">PRESS CONFERENCE</div><h2>'+head+'</h2>'+ctx+'<div class="event"><b>'+q.q+'</b><p class="muted">เลือกคำตอบที่เหมาะสมที่สุด • มีข้อที่ถูกเพียง 1 ข้อ • ตอบถูกความสุข +4 ตอบพลาดความสุข −5</p></div>'+opts.map(function(o,i){return '<button class="choice" onclick="answerInterview('+i+')"><b>'+o.t+'</b></button>'}).join('');
+ running=false;$('decisionModal').classList.remove('hidden');
+}
+function answerInterview(i){
+ const iv=window.iv;if(!iv||iv.done)return;iv.done=true;const o=iv.opts[i];
+ g.happy=clamp(g.happy+(o.ok?4:-5));
+ const head=iv.kind==='pre'?'🎤 สัมภาษณ์ก่อนเกม':'🎤 สัมภาษณ์หลังเกม';
+ $('decisionContent').innerHTML='<div class="eyebrow">PRESS CONFERENCE</div><h2>'+head+'</h2><div class="event" style="border-left-color:'+(o.ok?'#6df0ae':'#ff6a6a')+'"><b>'+(o.ok?'✅ ตอบได้ดีมาก! สื่อและแฟนบอลชื่นชม':'❌ คำตอบนี้ทำให้ถูกวิจารณ์')+'</b><p class="muted">คุณตอบว่า: '+o.t+'</p>'+'<p>ความสุข '+(o.ok?'+4':'−5')+' → ตอนนี้ '+g.happy+'/100</p></div><button class="choice" onclick="finishInterview()"><b>'+(iv.kind==='pre'?'ลงสนามเลย →':'ไปต่อ →')+'</b></button>';
+ log((o.ok?'🎤 ตอบสัมภาษณ์ได้ดี ':'🎤 ตอบสัมภาษณ์พลาด ')+'ความสุข '+(o.ok?'+4':'−5'));render();
+}
+function finishInterview(){const iv=window.iv;window.iv=null;closeDecision();if(iv&&iv.cb)iv.cb()}
+
+/* ===== V7.4: hidden cards (yellow/red) + automatic season goals & assists ===== */
+const CARD_REASONS={
+ goal:{yellow:['ถอดเสื้อฉลองประตูในจังหวะที่ผู้ตัดสินเห็นชัด','ล้มลงในเขตโทษเพื่อขอจุดโทษ แต่ผู้ตัดสินมองว่าเป็นการแกล้งล้ม','ประท้วงผู้ตัดสินอย่างออกนอกหน้าหลังเสียโอกาส','ใช้มือปัดบอลโดยจงใจเพื่อคุมจังหวะ'],red:['ใช้ศอกกระแทกหน้าคู่ต่อสู้ในจังหวะแย่งบอล','เหยียบข้อเท้าคู่ต่อสู้อย่างจงใจ','ใช้คำพูดไม่เหมาะสมกับผู้ตัดสินหลังถูกเป่าฟาวล์']},
+ assist:{yellow:['ประท้วงผู้ตัดสินหลังถูกฟาวล์ซ้ำ','เข้าสกัดจากด้านหลังตอนเสียบอล','เตะบอลทิ้งหลังเสียงนกหวีด'],red:['ปะทะคู่ต่อสู้ด้วยศอกขณะกระโดดแย่งบอล','พุ่งเข้าสกัดสองเท้าอย่างรุนแรงจนเสียบอลกลางสนาม']},
+ defend:{yellow:['เข้าสกัดรุนแรงจากด้านหลัง','ดึงเสื้อกองหน้าเพื่อหยุดเกมสวนกลับ','ตัดฟาวล์ทำลายจังหวะรุกของคู่แข่ง','ถ่วงเวลาและไม่ยอมถอยระยะตามกติกา'],red:['เป็นแนวรับสุดท้ายแล้วดึงกองหน้าล้มในจังหวะที่จะได้ยิงประตู','เข้าสกัดสองเท้าอย่างรุนแรงจนกองหน้าบาดเจ็บ','ใช้ศอกกระแทกกองหน้าขณะแย่งลูกกลางอากาศ']},
+ save:{yellow:['ออกมาปะทะกองหน้าโดยไม่ได้เล่นบอล','ถ่วงเวลาตอนจะเตะลูกตั้งเตะ','ชนกองหน้าอย่างแรงระหว่างออกมาปัดบอล'],red:['ปะทะกองหน้าจนล้มในเขตโทษขณะที่เขากำลังจะยิง','ออกมานอกเขตโทษแล้วใช้มือปัดบอล']}
+};
+function cardKind(c){return c.save?'save':c.defend?'defend':c.assist?'assist':'goal'}
+function rollCard(c){const r=rand(1,1000);const t=r<=5?'red':(r<=55?'yellow':null);if(!t)return null;const list=CARD_REASONS[cardKind(c)][t];return {type:t,reason:list[rand(0,list.length-1)]}}
+function applyCard(card){
+ match.yellow=match.yellow||0;match.red=match.red||0;g.stats.yellow=g.stats.yellow||0;g.stats.red=g.stats.red||0;
+ if(card.type==='yellow'){match.yellow++;g.stats.yellow++;g.happy=clamp(g.happy-2);match.form-=.5}
+ else{match.red++;g.stats.red++;g.happy=clamp(g.happy-6);match.form-=2;if(match.gameNo<match.total)match.ban=true;else g.banNext=true}
+ log((card.type==='red'?'🟥 ใบแดง: ':'🟨 ใบเหลือง: ')+card.reason);
+}
+function showCardPopup(card,cb){
+ window._ccb=cb;const red=card.type==='red',col=red?'#e01e37':'#ffd400';
+ const sentence=red?('ผลที่ตามมา: ความสุข −6 • ฟอร์ม −2 • ติดโทษแบน 1 นัด ('+(match.gameNo<match.total?'พลาดจังหวะถัดไป':'พลาดจังหวะแรกของฤดูกาลหน้า')+')'):'ผลที่ตามมา: ความสุข −2 • ฟอร์ม −0.5';
+ $('decisionContent').innerHTML='<div class="eyebrow">REFEREE DECISION</div><h2>'+(red?'🟥 ใบแดง! ถูกไล่ออกจากสนาม':'🟨 ใบเหลือง! ถูกผู้ตัดสินตักเตือน')+'</h2><div style="display:flex;justify-content:center;margin:12px 0"><div style="width:78px;height:112px;border-radius:10px;background:'+col+';box-shadow:0 8px 22px #0008,inset 0 0 0 3px rgba(255,255,255,.35);transform:rotate(-6deg)"></div></div><p style="text-align:center;margin:4px 0 2px"><b>นาทีที่ '+(match.curMinute||0)+"'</b></p><p style=\"text-align:center;margin:2px 0\">เหตุผล: "+card.reason+'</p><p class="muted" style="text-align:center">'+sentence+'</p><button class="choice" onclick="closeCardPopup()"><b>รับทราบ →</b></button>';
+ running=false;$('decisionModal').classList.remove('hidden');
+}
+function closeCardPopup(){const cb=window._ccb;window._ccb=null;closeDecision();if(cb)cb()}
+function poisson(l){if(l<=0)return 0;if(l>40)return Math.max(0,Math.round(gauss(l,Math.sqrt(l))));const L=Math.exp(-l);let k=0,p=1;do{k++;p*=Math.random()}while(p>L);return k-1}
+const AUTO_RATE={ST:{g:.85,a:.30},Winger:{g:.50,a:.42},CM:{g:.30,a:.36},CB:{g:.12,a:.07},GK:{g:.006,a:.012}};
+function seasonAuto(m){
+ const r=AUTO_RATE[g.pos]||AUTO_RATE.CM,q=Math.pow(clamp((ovr()-35)/64,0,1),2.2);
+ const ff=clamp((m.form-6)/4.5,-.4,1);
+ const cond=clamp(.6+.25*ff+.15*(g.energy/100)+.12*(g.happy/100)+.1*(g.health/100),.45,1.25);
+ const G=Math.max(0,m.seasonGames-3-(m.red||0));
+ return {goals:poisson(r.g*q*cond*G),assists:poisson(r.a*q*cond*G),cond:cond,games:G};
+}
+function recordMoment(label,text,success){match.log=match.log||[];const e={n:match.gameNo,min:match.curMinute||0,label:label,text:text,success:success};const i=match.log.findIndex(x=>x.n===e.n);if(i>=0)match.log[i]=e;else match.log.push(e)}
+function afterMoment(){if(match&&match.gameNo>=match.total)showMatchSummary()}
+function showMatchSummary(){
+ const log=(match&&match.log)||[];
+ const rows=log.map(function(e){const tone=e.success===null?'#9aabc1':e.success?'#6df0ae':'#ff8d8d';const tag=e.success===null?'เพลย์เซฟ':e.success?'สำเร็จ':'ไม่สำเร็จ';return '<div style="border:1px solid '+tone+'66;border-left:5px solid '+tone+';border-radius:12px;padding:10px 12px;margin:8px 0;background:#0a1d14aa"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px;color:#c4ddcf"><b>จังหวะที่ '+e.n+' • นาที '+e.min+"'</b><b style=\"color:"+tone+"\">"+tag+'</b></div><div style="font-weight:800;margin:4px 0">'+e.label+'</div><div style="font-size:14.5px;line-height:1.5">'+e.text+'</div></div>'}).join('');
+ $('decisionContent').innerHTML='<div class="eyebrow">MATCH DAY • สรุปผล</div><h2>📋 ผลทั้ง '+log.length+' จังหวะ</h2><div class="matchscore" style="margin:6px 0 4px">'+match.goals+' <span>—</span> '+match.conceded+'</div><p class="muted" style="text-align:center;margin:0 0 4px">สกอร์ทีมจากจังหวะที่คุณเล่น</p>'+rows+'<button class="choice" onclick="closeMatchSummary()"><b>ไปดูสรุปฤดูกาล →</b></button>';
+ running=false;$('decisionModal').classList.remove('hidden');
+}
+function closeMatchSummary(){closeDecision();showInterview('post',function(){nextMatchMoment()})}
+function nextMatchMoment(){if(!match)return;if(match.gameNo<match.total){match.gameNo++;if(match.ban){match.ban=false;match.curMinute=0;recordMoment('🚫 ติดโทษแบน','พลาดเกมนี้เพราะใบแดงจากเกมก่อนหน้า',null);if(match.gameNo>=match.total)showMatchSummary();else nextMatchMoment();return}startMatchMoment()}else finishSeasonMatches()}
+function seasonAwards(m,bonusGoals){let performance=Math.max(0,Math.round(m.form*2+ovr()*1.2+(m.scored+bonusGoals)*8+m.assisted*6+m.clean*4+g.stats.trophies*2));let awards=[];let leagueChance=clamp(Math.round((performance-85)*1.05),0,92);let leagueWinner=rand(1,100)<=leagueChance;if(leagueWinner){let title='ผู้เล่นยอดเยี่ยมประจำลีก';awards.push(title);log('🏆 รางวัลลีก: '+g.name+' คว้ารางวัลผู้เล่นยอดเยี่ยมประจำลีก!')}
+let inEurope=['พรีเมียร์ลีก อังกฤษ','ลาลีกา สเปน','เซเรียอา อิตาลี','บุนเดสลีกา เยอรมนี','ลีกเอิง ฝรั่งเศส'].includes(g.league);let uclQualified=inEurope&&rand(1,100)<=clamp(Math.round((performance-105)*.72),5,82);let uclChance=uclQualified?clamp(Math.round((performance-125)*.78),0,78):0;if(uclQualified)log('🏆 '+g.club+' ผ่านเข้าไปเล่นยูฟ่าแชมเปียนส์ลีก');if(uclQualified&&rand(1,100)<=uclChance){awards.push('ผู้เล่นยอดเยี่ยมประจำยูฟ่าแชมเปียนส์ลีก');log('🌟 ยูฟ่าแชมเปียนส์ลีก: '+g.name+' ได้รับเลือกเป็นผู้เล่นยอดเยี่ยมประจำรายการ!')}
+let xiChance=clamp(Math.round((performance-100)*.72),0,88);if(rand(1,100)<=xiChance){awards.push('FIFA FIFPRO World 11');log('🌍 ประกาศ FIFA 11 ผู้เล่นยอดเยี่ยม: '+g.name+' มีชื่อติดทีม!')}
+let ballonChance=clamp(Math.round((performance-145)*.62),0,82);let rank=0;if(rand(1,100)<=ballonChance){rank=rand(2,10);if(performance>205&&rand(1,100)<=Math.min(85,Math.round((performance-190)*2.1)))rank=1;}for(let r=10;r>=2;r--){let name=r===rank?g.name:pick(['K. Mbappé','E. Haaland','J. Bellingham','V. Junior','L. Messi','H. Kane','M. Salah','Rodri','L. Yamal','K. De Bruyne']);log('🥇 บัลลงดอร์ อันดับ '+r+' : '+name)}if(rank===1){awards.push('ผู้ชนะบัลลงดอร์');log('👑🏆 ประกาศอย่างยิ่งใหญ่! '+g.name+' คือผู้ชนะรางวัลบัลลงดอร์!')}else if(rank>=2){awards.push('Ballon d’Or อันดับ '+rank);log('🏅 บัลลงดอร์: '+g.name+' จบอันดับ '+rank)}else{log('👑 ผู้ชนะบัลลงดอร์: '+pick(['K. Mbappé','E. Haaland','J. Bellingham','V. Junior','L. Messi']))}
+return {awards,performance,leagueChance,uclChance,xiChance,ballonChance,rank,uclQualified};}
+
+const bigFive=['พรีเมียร์ลีก อังกฤษ','ลาลีกา สเปน','เซเรียอา อิตาลี','บุนเดสลีกา เยอรมนี','ลีกเอิง ฝรั่งเศส'];
+function pickChampion(list,exclude,last){const pool=list.filter(c=>c!==exclude);let c=pick(pool);if(c===last&&Math.random()<.65)c=pick(pool);return c}
+function seasonChampions(ad){
+ g.champs=g.champs||{league:{},ucl:{}};g.stats.titles=g.stats.titles||[];g.stats.awardHistory=g.stats.awardHistory||[];
+ const perf=ad.performance,list=(clubs[g.league]||[]).slice();if(list.indexOf(g.club)<0)list.push(g.club);
+ const bonus=clamp((perf-110)*.22,-8,22),last=g.champs.league[g.league];
+ const table=list.map(function(c){let sc=(strHash(c)%1000)/1000*38+gauss(0,8);if(c===g.club)sc+=bonus;if(c===last)sc-=5;return {c:c,sc:sc}}).sort(function(a,b){return b.sc-a.sc});
+ const rank=table.findIndex(function(r){return r.c===g.club})+1,champ=table[0].c;
+ const res={rank:rank,teams:table.length,leagueChampion:champ,leagueWon:champ===g.club,uclWon:false,uclWinner:null,uclQualified:!!ad.uclQualified};
+ log('📊 '+g.club+' จบอันดับ '+rank+' จาก '+table.length+' ในลีก '+g.league);
+ if(res.leagueWon){g.stats.trophies++;g.stats.titles.push({year:g.year,age:g.age,title:'แชมป์ลีก • '+g.league});g.stats.awardHistory.push({year:g.year,age:g.age,title:'แชมป์ลีก '+g.league,type:'silver'});log('🏆 '+g.club+' คว้าแชมป์ '+g.league+' ประจำปี '+g.year+' ด้วยผลงานของคุณ!')}
+ else log('🏅 แชมป์ '+g.league+' ปีนี้: '+champ);
+ g.champs.league[g.league]=champ;
+ const all=[];bigFive.forEach(function(l){(clubs[l]||[]).forEach(function(c){all.push(c)})});
+ const ownUcl=ad.uclQualified?clamp(.04+(perf-110)/560,.03,.38):0;
+ let uclWinner;
+ if(ownUcl&&Math.random()<ownUcl){uclWinner=g.club;res.uclWon=true;g.stats.trophies+=2;g.stats.titles.push({year:g.year,age:g.age,title:'แชมป์ยูฟ่าแชมเปียนส์ลีก'});g.stats.awardHistory.push({year:g.year,age:g.age,title:'แชมป์ยูฟ่าแชมเปียนส์ลีก',type:'gold'});log('🏆⭐ '+g.club+' คว้าแชมป์ยูฟ่าแชมเปียนส์ลีก '+g.year+'!')}
+ else if(all.length){uclWinner=pickChampion(all,g.club,g.champs.ucl.last);log('⭐ แชมป์ยูฟ่าแชมเปียนส์ลีกปีนี้: '+uclWinner)}
+ if(uclWinner)g.champs.ucl.last=uclWinner;
+ res.uclWinner=uclWinner||null;
+ return res;
+}
+
+function showSeasonPopup(e,cb){
+ window._spcb=cb;
+ const medal=e.rank===1?'🥇':e.rank===2?'🥈':e.rank===3?'🥉':'🏟️',col=e.rank===1?'#ffd66b':e.rank<=4?'#6df0ae':'#c4ddcf';
+ const tile=function(l,v){return '<div style="background:#0a1d14aa;border:1px solid #2b5c46;border-radius:12px;padding:10px 8px;text-align:center"><div style="font-size:26px;font-weight:900;color:#fff">'+v+'</div><div style="font-size:13px;color:#c4ddcf">'+l+'</div></div>'};
+ const extra=[];
+ if(e.leagueWon)extra.push('🏆 <b>แชมป์ '+e.league+'</b>');else extra.push('แชมป์ลีกปีนี้: '+e.leagueChampion);
+ if(e.uclWon)extra.push('⭐ <b>แชมป์ยูฟ่าแชมเปียนส์ลีก</b>');else if(e.uclWinner)extra.push('แชมป์ยูฟ่าแชมเปียนส์ลีกปีนี้: '+e.uclWinner);
+ if(e.awards&&e.awards.length)extra.push('🏅 รางวัลส่วนตัว: '+e.awards.join(' • '));
+ $('decisionContent').innerHTML='<div class="eyebrow">SEASON REVIEW • '+e.year+'</div><h2>🏁 สรุปจบฤดูกาล</h2><p class="muted" style="margin:0 0 8px">'+e.club+' • '+e.league+' • อายุ '+e.age+' ปี</p>'
+ +'<div style="text-align:center;padding:12px;border-radius:16px;border:2px solid '+col+'88;background:'+col+'18;margin-bottom:10px"><div style="font-size:15px;color:#c4ddcf">ทีมจบอันดับที่</div><div style="font-size:54px;font-weight:1000;line-height:1.05;color:'+col+'">'+medal+' '+e.rank+'<span style="font-size:20px;color:#c4ddcf"> / '+e.teams+'</span></div></div>'
+ +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'+tile('ประตู',e.goals)+tile('แอสซิสต์',e.assists)+tile('ลงสนาม',e.apps)+'</div>'
+ +'<p class="muted" style="margin:10px 0 4px">จากจังหวะที่คุณเล่น + ตลอดฤดูกาล (คำนวณจากฟอร์ม พลังงาน ความสุข สุขภาพ ×'+(e.cond||1).toFixed(2)+') • คลีนชีต '+e.clean+' • ฟอร์ม '+e.form+((e.yellow||e.red)?' • 🟨 '+(e.yellow||0)+' 🟥 '+(e.red||0):'')+' • ค่าเหนื่อย '+money(e.salary)+'</p>'
+ +extra.map(function(t){return '<p style="margin:6px 0">'+t+'</p>'}).join('')
+ +'<button class="choice" onclick="closeSeasonPopup()"><b>ไปต่อ →</b></button>';
+ running=false;$('decisionModal').classList.remove('hidden');
+}
+function closeSeasonPopup(){const cb=window._spcb;window._spcb=null;closeDecision();if(cb)cb()}
+function clubHistoryHTML(){
+ const S=g.seasons||[];
+ if(!S.length)return '<h3>🏟️ ประวัติสโมสร</h3><p class="muted">ข้อมูลรายสโมสรจะเริ่มบันทึกเมื่อจบฤดูกาลแรกในฐานะนักเตะอาชีพ</p>';
+ const stints=[];S.forEach(function(x){const l=stints[stints.length-1];if(l&&l.club===x.club)l.list.push(x);else stints.push({club:x.club,league:x.league,list:[x]})});
+ const sum=function(a,k){return a.reduce(function(t,x){return t+(x[k]||0)},0)};
+ const row=function(l,v){return '<div class="irow"><span>'+l+'</span><b>'+v+'</b></div>'};
+ return '<h3>🏟️ ประวัติสโมสร</h3>'+stints.slice().reverse().map(function(st,idx){
+  const L=st.list,first=L[0],last=L[L.length-1],cur=idx===0&&!g.retired;
+  const lg=L.filter(function(x){return x.leagueWon}).map(function(x){return x.year}),uc=L.filter(function(x){return x.uclWon}).map(function(x){return x.year});
+  const aw=[];L.forEach(function(x){(x.awards||[]).forEach(function(a){aw.push(a+' ('+x.year+')')})});
+  const best=Math.min.apply(null,L.map(function(x){return x.rank}));
+  let honors='';
+  if(lg.length)honors+='<div style="margin:4px 0">🏆 แชมป์ลีก × '+lg.length+' <span class="muted">('+lg.join(', ')+')</span></div>';
+  if(uc.length)honors+='<div style="margin:4px 0">⭐ แชมป์ยูฟ่าแชมเปียนส์ลีก × '+uc.length+' <span class="muted">('+uc.join(', ')+')</span></div>';
+  if(aw.length)honors+='<div style="margin:4px 0">🏅 รางวัลส่วนตัว × '+aw.length+'<div class="muted" style="font-size:13px">'+aw.join(' • ')+'</div></div>';
+  if(!honors)honors='<div class="muted">ยังไม่มีแชมป์หรือรางวัลกับสโมสรนี้</div>';
+  return '<div class="panel2" style="margin:8px 0"><h3 style="margin:0 0 2px">'+st.club+(cur?' <span class="pill">ปัจจุบัน</span>':'')+'</h3><div class="muted" style="margin-bottom:6px">'+st.league+' • '+first.year+(last.year!==first.year?'–'+last.year:'')+' • '+L.length+' ฤดูกาล</div>'+row('ลงสนาม',sum(L,'apps'))+row('ประตู',sum(L,'goals'))+row('แอสซิสต์',sum(L,'assists'))+row('คลีนชีต',sum(L,'clean'))+row('ใบเหลือง / ใบแดง',sum(L,'yellow')+' / '+sum(L,'red'))+row('อันดับลีกดีที่สุด',best)+'<div style="margin-top:8px">'+honors+'</div></div>';
+ }).join('');
+}
+function finishSeasonMatches(){let m=match;g.stats.goals+=m.scored;g.stats.assists+=m.assisted;g.stats.clean+=m.clean;g.stats.apps+=m.seasonGames;g.stats.form+=Math.round(m.form);const auto=seasonAuto(m);let bonusGoals=auto.goals,bonusAssists=auto.assists;g.stats.goals+=bonusGoals;g.stats.assists+=bonusAssists;let awardData=seasonAwards(m,Math.round(bonusGoals*.2+bonusAssists*.15)),seasonAwardList=awardData.awards;g.stats.awards.push(...seasonAwardList);
+ g.stats.awardHistory=g.stats.awardHistory||[];
+ seasonAwardList.forEach(title=>g.stats.awardHistory.push({year:g.year,age:g.age,title,type:title.includes('บัลลงดอร์')||title.includes('Ballon')?'gold':'silver'}));
+ let award=seasonAwardList.length?seasonAwardList.join(' • '):'';let score=awardData.performance;const sc=seasonChampions(awardData);g.seasons=g.seasons||[];const entry={year:g.year,age:g.age,club:g.club,league:g.league,rank:sc.rank,teams:sc.teams,apps:m.seasonGames,goals:m.scored+bonusGoals,assists:m.assisted+bonusAssists,autoGoals:bonusGoals,autoAssists:bonusAssists,cond:auto.cond,yellow:m.yellow||0,red:m.red||0,clean:m.clean,form:Math.round(m.form),salary:m.salary,awards:seasonAwardList.slice(),leagueWon:sc.leagueWon,leagueChampion:sc.leagueChampion,uclWon:sc.uclWon,uclWinner:sc.uclWinner,uclQualified:sc.uclQualified};g.seasons.push(entry);
+let off=pick(['สโมสรเริ่มเจรจาสัญญาฉบับใหม่','สื่อรายงานข่าวความสนใจจากทีมต่างประเทศ','ความสัมพันธ์กับผู้จัดการทีมดีขึ้น','คุณเริ่มมีความรักครั้งใหม่','พักผ่อนกับครอบครัวและฟื้นฟูสภาพจิตใจ']);if(off.includes('ความรัก')){g.relationship='มีคนรัก';g.happy=clamp(g.happy+6)}else if(off.includes('ต่างประเทศ')){log('📨 มีแมวมองจากหลายสโมสรเริ่มติดตามฟอร์มของคุณ')}else if(off.includes('สัญญา'))g.money+=m.salary*.2;else g.happy=clamp(g.happy+3);
+g.health=clamp(g.health-rand(3,9));if(Math.random()<.045){g.injury=1;g.health=clamp(g.health-18);log('🚑 บาดเจ็บ ต้องพักฟื้นในปีหน้า')}
+$('eventArea').innerHTML=`<div class="event"><h3>📋 สรุปฤดูกาล • อายุ ${g.age}</h3><p>ลงสนาม ${m.seasonGames} นัด • ประตู ${m.scored+bonusGoals} (จากจังหวะที่คุณเล่น ${m.scored} + ตลอดฤดูกาล ${bonusGoals}) • แอสซิสต์ ${m.assisted+bonusAssists} (จากจังหวะที่คุณเล่น ${m.assisted} + ตลอดฤดูกาล ${bonusAssists}) • คลีนชีต/หยุดเกม ${m.clean}${(m.yellow||m.red)?' • 🟨 '+(m.yellow||0)+' 🟥 '+(m.red||0):''}</p><p class="muted">ตัวคูณสภาพความพร้อมจากฟอร์ม พลังงาน ความสุข และสุขภาพ: ×${auto.cond.toFixed(2)}</p><p>🏟️ ${g.club} จบอันดับ <b>${sc.rank}</b> จาก ${sc.teams} ในลีก${sc.leagueWon?' • 🏆 แชมป์ลีก!':''}${sc.uclWon?' • ⭐ แชมป์ยูฟ่าแชมเปียนส์ลีก!':''}</p><p>ฟอร์มการแข่งขัน ${Math.round(m.form)} • ค่าเหนื่อย ${money(m.salary)}</p><p>${award?'🏅 รางวัล: '+award:'ยังไม่มีรางวัลส่วนตัวในฤดูกาลนี้'}</p><p class="muted">คะแนนผลงาน ${awardData.performance} • โอกาสรางวัลลีก ${awardData.leagueChance}% • UCL ${awardData.uclChance}% • FIFA 11 ${awardData.xiChance}% • บัลลงดอร์ ${awardData.ballonChance}%</p><p class="muted">บันทึกชีวิตนอกสนาม: ${off}</p></div>`;if(awardData.rank===1)$('eventArea').innerHTML+=`<div class="event ballon-winner"><div class="eyebrow">THE GOLDEN BALL • WORLD NO.1</div><h2>👑🏆 BALLON D’OR WINNER</h2><h1>${g.name}</h1><p>คุณคว้ารางวัลบัลลงดอร์! จากผลงานตลอดฤดูกาล คุณได้รับการยกย่องให้เป็นนักเตะที่ดีที่สุดในโลก</p><div class="ballon-glow">🥇</div></div>`;g.history.push({year:g.year,age:g.age,club:g.club,note:`${m.seasonGames} นัด • ${m.scored+bonusGoals} ประตู • ${m.assisted+bonusAssists} แอสซิสต์`});match=null;$('matchArea').innerHTML='';running=true;elapsed=0;render();updateClock();log('📣 จบฤดูกาลอายุ '+g.age+' ปี • '+off);showSeasonPopup(entry,function(){if(g.age===18&&!g.retired){showDecision('อายุ 18 ปี • ถึงเวลาตัดสินใจ','คุณเดินทางมาถึงวัยผู้ใหญ่แล้ว หลังผ่านช่วงชีวิตตั้งแต่เด็กจนถึงการเป็นนักฟุตบอลอาชีพ 3 ฤดูกาล คุณจะเลือกเส้นทางไหนต่อ?',[
+{label:'⚽ ไปต่อกับฟุตบอลอาชีพ',hint:'เดินหน้าสู่เส้นทางอาชีพ ลุ้นย้ายทีม คว้าแชมป์ และสร้างตำนานต่อไป',action:'continueAt18()'},
+{label:'🛑 พอแค่นี้และเลิกเล่นฟุตบอล',hint:'ปิดฉากเส้นทางฟุตบอล พร้อมสรุปชีวิต 18 ปีที่ผ่านมา',action:'stopAt18()'}]);}else if(g.age>18&&!g.retired){showTransferWindow();}});} 
+
+function showTransferWindow(){
+ if(!g||g.retired)return;
+ const topLeagues=['พรีเมียร์ลีก อังกฤษ','ลาลีกา สเปน','เซเรียอา อิตาลี','บุนเดสลีกา เยอรมนี','ลีกเอิง ฝรั่งเศส'];
+ const pool=[];for(const league of leagues)for(const club of clubs[league])if(club!==g.club)pool.push({club,league});
+ const rating=ovr();
+ // โอกาสได้รับข้อเสนอทั่วไป: ขั้นต่ำ 50% และเพิ่มตาม OVR
+ const generalChance=clamp(Math.round(50+(rating-50)*1.15),50,95);
+ // เมื่อ OVR >= 60 มีโอกาสได้ทีมจาก 5 ลีกใหญ่เป็นหนึ่งใน 4 ข้อเสนอ
+ const topChance=rating>=55?clamp(Math.round(42+(rating-55)*1.7),42,97):0;
+ let eligible=pool.filter(x=>!topLeagues.includes(x.league));
+ let offers=[];
+ // สุ่มโอกาสทีมจากลีกใหญ่ก่อน เพื่อให้เป็นหนึ่งในสี่ตัวเลือกจริง
+ if(rating>=55 && rand(1,100)<=Math.min(100,topChance+15)){
+   const topPool=pool.filter(x=>topLeagues.includes(x.league));
+   if(topPool.length){let club=pick(topPool);offers.push({...club,signChance:topChance});}
+ }
+ // เติมข้อเสนอทั่วไป โดย OVR สูงขึ้นจะทำให้ทีมระดับสูงมีโอกาสถูกเลือกมากขึ้น
+ const remaining=pool.filter(x=>!offers.some(o=>o.club===x.club));
+ while(offers.length<4&&remaining.length){
+   let idx=rand(0,remaining.length-1),candidate=remaining.splice(idx,1)[0];
+   const isTop=topLeagues.includes(candidate.league);
+   const chance=isTop?clamp(Math.round(42+(rating-55)*1.7),42,97):generalChance;
+   if(rand(1,100)<=chance)offers.push({...candidate,signChance:chance});
+ }
+ // เติมให้ครบ 4 ตัวเลือกหากการสุ่มไม่ผ่าน เพื่อไม่ให้ตลาดว่าง
+ while(offers.length<4){
+   const fallback=pool.filter(x=>!offers.some(o=>o.club===x.club));
+   if(!fallback.length)break;
+   let chosen=pick(fallback);let isTop=topLeagues.includes(chosen.league);offers.push({...chosen,signChance:isTop?topChance||25:generalChance});
+ }
+ window.transferOffers=offers;
+ const choices=offers.map((o,i)=>({label:'✈️ '+o.club,hint:'ย้ายไป '+o.league+' • โอกาสเซ็นสัญญา '+o.signChance+'%',action:`acceptTransfer(${i})`}));
+ choices.push({label:'🏠 อยู่กับสโมสรปัจจุบันต่อ',hint:'ไม่ย้ายทีม รักษาสถานะและสัญญากับสโมสรเดิม',action:'stayAtClub()'});
+ showDecision('🔁 ตลาดซื้อขายนักเตะ • ปลายฤดูกาล',
+ 'ข้อเสนอ 4 สโมสร • โอกาสข้อเสนอทั่วไปขั้นต่ำ 50% และเพิ่มตาม OVR'+(rating>=55?' • โอกาสมีทีมจาก 5 ลีกใหญ่ขั้นต่ำ 42% และเพิ่มตาม OVR (รอบนี้ '+topChance+'%)':' • เมื่อ OVR 55 ขึ้นไป จะเริ่มมีโอกาสได้รับข้อเสนอจาก 5 ลีกใหญ่'),choices);
+}
+function acceptTransfer(i){
+ const offer=window.transferOffers&&window.transferOffers[i];if(!offer)return;
+ if(rand(1,100)> (offer.signChance||50)){
+   milestoneLog('📨 '+offer.club+' ยังไม่ตอบรับข้อเสนอของคุณในครั้งนี้ • โอกาสเซ็นสัญญา '+(offer.signChance||50)+'%');closeDecision();render();return;
+ }
+ const old=g.club;g.club=offer.club;g.league=offer.league;g.money+=Math.round(Math.pow(ovr()/100,4)*1500000/1000)*1000;
+ milestoneLog('✈️ ย้ายจาก '+old+' ไป '+g.club+' ('+g.league+') เรียบร้อยแล้ว');closeDecision();render();
+}
+function stayAtClub(){milestoneLog('🤝 คุณตัดสินใจอยู่กับ '+g.club+' ต่อไป');closeDecision();render()}
+function continueAt18(){milestoneLog('คุณเลือกเดินหน้ากับฟุตบอลอาชีพต่อไป! เส้นทางสู่การเป็นตำนานยังไม่จบ');closeDecision();render();showTransferWindow()}
+function stopAt18(){g.retired=true;running=false;match=null;$('matchArea').innerHTML='';let awards=g.stats.awards.length?g.stats.awards.map(a=>'<span class="pill">'+a+'</span>').join(''):'ยังไม่มีรางวัลส่วนตัว';$('eventArea').innerHTML=`<div class="event"><h2>🏁 สรุปเส้นทาง 18 ปีแรก</h2><h3 style="color:var(--gold)">${g.name}</h3><p>คุณเลือกหยุดเส้นทางฟุตบอลไว้ที่อายุ 18 ปี</p><div class="fields"><div>สโมสรสุดท้าย <b>${g.club}</b></div><div>OVR <b>${ovr()}</b></div><div>ลงสนาม <b>${g.stats.apps}</b></div><div>ประตู <b>${g.stats.goals}</b></div><div>แอสซิสต์ <b>${g.stats.assists}</b></div><div>แชมป์ <b>${g.stats.trophies}</b></div><div>สุขภาพ <b>${g.health}/100</b></div><div>ความสุข <b>${g.happy}/100</b></div></div><h3>รางวัลที่ได้รับ</h3><p>${awards}</p><p class="muted">นี่คือบทสรุปของ 18 ปีแรกในชีวิตคุณ ขอบคุณที่เดินทางมาด้วยกัน</p></div>`;log('🏁 คุณตัดสินใจยุติเส้นทางฟุตบอลเมื่ออายุ 18 ปี');render();updateClock()}
+function chooseTraining(t){if(!g)return;g.training=t;render();log('📋 เปลี่ยนแผนฝึกเป็น '+({balanced:'สมดุล',position:'เน้นตำแหน่ง',technical:'เน้นเทคนิค',physical:'เน้นร่างกาย',light:'ฝึกเบามาก'}[t]))}
+function trainingHTML(){let opts=[['balanced','ฝึกสมดุล','ค่าพลังหลักทุกด้านเพิ่มเล็กน้อยและสม่ำเสมอ','ใช้พลังงาน 20'],['position','เน้นเฉพาะตำแหน่ง','เพิ่มค่าพลังสำคัญตามตำแหน่งที่เล่น','ใช้พลังงาน 27'],['technical','เน้นเทคนิค','เพิ่มเลี้ยงบอล ยิงประตู และจ่ายบอลมากเป็นพิเศษ','ใช้พลังงาน 32'],['physical','เน้นร่างกาย','เพิ่มความเร็วและความแข็งแกร่งมากที่สุด','ใช้พลังงาน 36'],['light','ฝึกเบามาก','แทบไม่ใช้พลังงาน แต่ค่าพลังขึ้นช้า','ใช้พลังงาน 6']];return opts.map(o=>`<div class="training-option"><b>${o[1]} ${g.training===o[0]?'✓':''}</b><p>${o[2]} • ${o[3]}</p><button class="${g.training===o[0]?'goldbtn':'secondary'}" onclick="chooseTraining('${o[0]}')">${g.training===o[0]?'กำลังใช้อยู่':'เลือกแผนนี้'}</button></div>`).join('')}
+
+const shopItems=[
+ ['อุปกรณ์ฟื้นฟู',18000,'พลังงาน +18','energy'],
+ ['รองเท้าสตั๊ดรุ่นโปร',65000,'PAC +2 • DRI +2','boots'],
+ ['ลูกฟุตบอลฝึกซ้อม',8500,'ค่าพลังเทคนิค +1','ball'],
+ ['อุปกรณ์เวทเทรนนิง',78000,'PHY +5 • DEF +3','weights'],
+ ['ชุดนอนฟื้นฟูกล้ามเนื้อ',42000,'สุขภาพ +15','recovery'],
+ ['ทริปพักผ่อน',95000,'สุขภาพ +10 • ความสุข +8','trip'],
+ ['นักโภชนาการส่วนตัว',100000,'สุขภาพ +12 • PHY +1','nutrition'],
+ ['โค้ชทักษะส่วนตัว',100000,'ค่าพลังตามตำแหน่ง +2','coach'],
+ ['เครื่องนวดกล้ามเนื้อ',35000,'พลังงาน +12 • สุขภาพ +5','massage'],
+ ['นาฬิกาหรู',100000,'ความสุข +8','watch'],
+ ['เครื่องดื่มเกลือแร่',3500,'พลังงาน +8','drink'],
+ ['โปรตีนและอาหารเสริม',12000,'พลังงาน +10 • สุขภาพ +3','protein'],
+ ['แช่น้ำเย็นฟื้นฟู (Ice Bath)',25000,'พลังงาน +15 • สุขภาพ +4','icebath'],
+ ['ซาวน่าและสปา',60000,'พลังงาน +22 • ความสุข +3','sauna'],
+ ['ที่นอนสุขภาพพรีเมียม',150000,'พลังงาน +30','bed'],
+ ['แพ็กเกจฟื้นฟูพรีเมียม',400000,'พลังงาน +50 • สุขภาพ +15','premium'],
+ ['ห้องออกซิเจนแรงดันสูง',1500000,'พลังงาน +70 • สุขภาพ +25','hyperbaric'],
+ ['วิตามินรวม',6000,'สุขภาพ +8','vitamin'],
+ ['ตรวจสุขภาพประจำปี',45000,'สุขภาพ +20','checkup'],
+ ['ทีมแพทย์ส่วนตัว',800000,'สุขภาพ +30 • ลดเวลาพักฟื้นบาดเจ็บ 1 ปี','doctor'],
+ ['แอปวิเคราะห์วิดีโอเกม',30000,'ค่าพลังตามตำแหน่ง +1 (2 ค่า)','video'],
+ ['สตั๊ดเฉพาะสนาม',90000,'PAC +1 • SHO +1 • DRI +1','boots2'],
+ ['เทรนเนอร์ส่วนตัว',180000,'PHY +3 • PAC +1','trainer'],
+ ['ถุงมือผู้รักษาประตูรุ่นโปร',140000,'HAN +3 • REF +3 (เหมาะกับ GK)','gloves'],
+ ['โค้ชเทคนิคเฉพาะตำแหน่ง',250000,'ค่าพลังตามตำแหน่ง +3 (2 ค่า)','coach2'],
+ ['นักจิตวิทยาการกีฬา',120000,'ความสุข +12','psych'],
+ ['ค่ายฝึกพิเศษต่างประเทศ',1200000,'ค่าพลังตามตำแหน่ง +4 (3 ค่า) • พลังงาน −10','camp'],
+ ['ห้องแล็บวิเคราะห์สมรรถภาพ',2000000,'ค่าพลังตามตำแหน่งทุกค่า +2','lab'],
+ ['ชมเกมและคอนเสิร์ตกับเพื่อน',8000,'ความสุข +4','fun'],
+ ['ดินเนอร์กับครอบครัว',15000,'ความสุข +5','dinner'],
+ ['ของขวัญให้คนรัก',40000,'ความสุข +7 (มีคนรัก) หรือ +3','gift'],
+ ['บริจาคเพื่อชุมชน',500000,'ความสุข +10 • ชื่อเสียงดีขึ้น','donate'],
+ ['ทริปหรูต่างประเทศ',900000,'ความสุข +18 • สุขภาพ +10 • พลังงาน +15','luxtrip'],
+ ['นาฬิกาหรูระดับสูง',3000000,'ความสุข +15','watch2'],
+ ['เช่าเรือยอร์ชพักผ่อน',8000000,'ความสุข +30 • พลังงาน +30','yacht']
+];
+const homeOptions=[
+ {tier:0,name:'หอพักของสโมสร',price:0,desc:'มาตรฐาน • อยู่ฟรี • ไม่เพิ่มความสุขหรือโบนัสใด ๆ แต่ใช้พลังงานต่ำที่สุด',energy:2,happy:0},
+ {tier:1,name:'บ้านพักไกลสโมสร',price:450000,desc:'ราคาถูกที่สุด • เดินทางไกล ใช้พลังงานมาก แต่เพิ่มความสุขมากที่สุด',energy:15,happy:18},
+ {tier:2,name:'หอพักใกล้สโมสร',price:1800000,desc:'ราคาปานกลาง • ใช้พลังงานน้อยมาก และเพิ่มความสุขเล็กน้อย',energy:4,happy:5},
+ {tier:3,name:'บ้านพักหรูใกล้สโมสร',price:12000000,desc:'ราคาสูงที่สุด • ไม่เสียพลังงานจากการเดินทาง และเพิ่มความสุขมากกว่าหอพักใกล้สโมสร แต่ยังน้อยกว่าบ้านพักไกลสโมสร',energy:0,happy:12}
+];
+const carOptions=[
+ {tier:0,name:'ไม่มีรถ / เดินทางกับสโมสร',price:0,desc:'มาตรฐาน • ฟรี • ไม่มีโบนัส ใช้พลังงานเดินทางระดับปานกลาง',energy:8,happy:0},
+ {tier:1,name:'รถมือสองประหยัด',price:250000,desc:'ราคาถูกที่สุด • ประหยัดค่าใช้จ่าย แต่ช่วยลดเวลาเดินทางได้เล็กน้อย',energy:6,happy:3},
+ {tier:2,name:'รถซีดานพรีเมียม',price:1800000,desc:'ราคาปานกลาง • เดินทางสะดวก ใช้พลังงานน้อย และเพิ่มความสุขปานกลาง',energy:3,happy:7},
+ {tier:3,name:'รถสปอร์ตหรู',price:6500000,desc:'ราคาสูงที่สุด • เดินทางสะดวกมาก ใช้พลังงานน้อยที่สุด และเพิ่มความสุขสูงสุด',energy:1,happy:12}
+];
+let activeShopTab='items';
+function setShopTab(tab){activeShopTab=tab;document.querySelectorAll('[data-shop-tab]').forEach(b=>b.classList.toggle('active',b.dataset.shopTab===tab));renderShop()}
+function gameMonth(){return (g.year||g.birth)*12+(g.monthIndex||0)}
+
+function posKeysFor(){return ({ST:['SHO','PAC','PHY'],Winger:['PAC','DRI','PAS'],CM:['PAS','DRI','PHY'],CB:['DEF','PHY','PAC'],GK:['REF','POS','DIV','HAN','KIC','SPD']})[g.pos]||[]}
+function addN(keys,n){keys.forEach(function(k){addAttribute(k,n)})}
+const SHOP_FX={
+ drink:function(){g.energy=clamp(g.energy+8)},
+ protein:function(){g.energy=clamp(g.energy+10);g.health=clamp(g.health+3)},
+ icebath:function(){g.energy=clamp(g.energy+15);g.health=clamp(g.health+4)},
+ sauna:function(){g.energy=clamp(g.energy+22);g.happy=clamp(g.happy+3)},
+ bed:function(){g.energy=clamp(g.energy+30)},
+ premium:function(){g.energy=clamp(g.energy+50);g.health=clamp(g.health+15)},
+ hyperbaric:function(){g.energy=clamp(g.energy+70);g.health=clamp(g.health+25)},
+ vitamin:function(){g.health=clamp(g.health+8)},
+ checkup:function(){g.health=clamp(g.health+20)},
+ doctor:function(){g.health=clamp(g.health+30);if(g.injury>0)g.injury=Math.max(0,g.injury-1)},
+ video:function(){addN(shuffleArr(posKeysFor()).slice(0,2),1)},
+ boots2:function(){addN(['PAC','SHO','DRI'],1)},
+ trainer:function(){addAttribute('PHY',3);addAttribute('PAC',1)},
+ gloves:function(){addAttribute('HAN',3);addAttribute('REF',3)},
+ coach2:function(){addN(shuffleArr(posKeysFor()).slice(0,2),3)},
+ psych:function(){g.happy=clamp(g.happy+12)},
+ camp:function(){addN(shuffleArr(posKeysFor()).slice(0,3),4);g.energy=clamp(g.energy-10)},
+ lab:function(){addN(posKeysFor(),2)},
+ fun:function(){g.happy=clamp(g.happy+4)},
+ dinner:function(){g.happy=clamp(g.happy+5)},
+ gift:function(){g.happy=clamp(g.happy+(g.relationship==='มีคนรัก'?7:3))},
+ donate:function(){g.happy=clamp(g.happy+10)},
+ luxtrip:function(){g.happy=clamp(g.happy+18);g.health=clamp(g.health+10);g.energy=clamp(g.energy+15)},
+ watch2:function(){g.inventory.push('นาฬิกาหรูระดับสูง');g.happy=clamp(g.happy+15)},
+ yacht:function(){g.happy=clamp(g.happy+30);g.energy=clamp(g.energy+30)}
+};
+const SHOP_CATS=[['⚡ ฟื้นพลังงาน',['energy','massage','drink','protein','icebath','sauna','bed','premium','hyperbaric','yacht']],['🩺 สุขภาพ',['recovery','nutrition','vitamin','checkup','doctor']],['🏋️ ฝึกซ้อมและอุปกรณ์',['boots','ball','weights','coach','video','boots2','trainer','gloves','coach2','camp','lab']],['🎉 ไลฟ์สไตล์และความสุข',['trip','watch','psych','fun','dinner','gift','donate','luxtrip','watch2']]];
+function shopReady(effect){let last=g.shopCooldown?g.shopCooldown[effect]:undefined;return last==null||gameMonth()-last>=5}
+function shopHTML(){
+ if(activeShopTab==='homes')return `<p class="shop-note">เลือกที่พักได้ 4 ระดับ • การซื้อบ้านใหม่จะแทนที่ระดับเดิม • ค่าเดินทางถูกหักพลังงานทุกเดือน</p>`+homeOptions.map(o=>`<div class="training-option"><b>${o.name} ${g.homeTier===o.tier?'✓ ใช้อยู่':''}</b><p>${o.desc}</p><p>ราคา ${money(o.price)} • พลังงานเดินทาง ${o.energy}/เดือน • ความสุข +${o.happy} เมื่อซื้อ</p><button class="${g.homeTier===o.tier?'goldbtn':'secondary'}" onclick="buyHome(${o.tier})" ${o.tier<=g.homeTier?'disabled':''}>${g.homeTier===o.tier?'ใช้อยู่':o.tier<g.homeTier?'ระดับต่ำกว่าเดิม':'ซื้อ / อัปเกรด'}</button></div>`).join('');
+ if(activeShopTab==='cars')return `<p class="shop-note">รถ 4 ระดับ • ซื้อรถใหม่เพื่ออัปเกรดจากคันเดิม • รถช่วยลดพลังงานที่ใช้เดินทางรายเดือน</p>`+carOptions.map(o=>`<div class="training-option"><b>${o.name} ${g.carTier===o.tier?'✓ ใช้อยู่':''}</b><p>${o.desc}</p><p>ราคา ${money(o.price)} • พลังงานเดินทาง ${o.energy}/เดือน • ความสุข +${o.happy} เมื่อซื้อ</p><button class="${g.carTier===o.tier?'goldbtn':'secondary'}" onclick="buyCar(${o.tier})" ${o.tier<=g.carTier?'disabled':''}>${g.carTier===o.tier?'ใช้อยู่':o.tier<g.carTier?'ระดับต่ำกว่าเดิม':'ซื้อ / อัปเกรด'}</button></div>`).join('');
+ var card=function(x,i){let ready=shopReady(x[3]);return `<div class="training-option"><b>${x[0]}</b><p>${x[2]} • ${money(x[1])}</p><p class="shop-note">${ready?'พร้อมซื้อ':'รออีก '+(5-(gameMonth()-((g.shopCooldown&&g.shopCooldown[x[3]]!=null)?g.shopCooldown[x[3]]:gameMonth())))+' เดือน'}${g.money<x[1]?' • เงินไม่พอ':''}</p><button class="secondary" onclick="buy(${i})" ${ready?'':'disabled'}>ซื้อสินค้า</button></div>`};
+ let html=`<p class="shop-note">ซื้อซ้ำได้ 1 ครั้งต่อรายการในทุก ๆ 5 เดือน • พลังงานต่ำกว่า 50 ทำให้โอกาสสำเร็จใน match day ลดลง ดังนั้นควรเตรียมของฟื้นพลังงานไว้</p>`;
+ SHOP_CATS.forEach(function(c){const list=[];shopItems.forEach(function(x,i){if(c[1].indexOf(x[3])>=0)list.push(card(x,i))});if(list.length)html+=`<h3 style="margin:14px 0 4px">${c[0]}</h3>`+list.join('')});
+ return html;
+}
+function renderShop(){const el=$('shopOptions');if(el)el.innerHTML=shopHTML()}
+function buy(i){
+ const x=shopItems[i];if(!x)return;const effect=x[3];
+ if(!shopReady(effect)){toast('สินค้านี้ซื้อได้ 1 ครั้งต่อ 5 เดือน');return}
+ if(g.money<x[1]){toast('เงินไม่เพียงพอ');return}
+ g.money-=x[1];g.shopCooldown=g.shopCooldown||{};g.shopCooldown[effect]=gameMonth();
+ if(effect==='energy')g.energy=clamp(g.energy+18);
+ if(effect==='boots'){addAttribute('PAC',2);addAttribute('DRI',2)}
+ if(effect==='ball'){['SHO','PAS','DRI'].forEach(k=>addAttribute(k,1))}
+ if(effect==='weights'){addAttribute('PHY',5);addAttribute('DEF',3)}
+ if(effect==='recovery')g.health=clamp(g.health+15);
+ if(effect==='watch'){g.inventory.push(x[0]);g.happy=clamp(g.happy+8)}
+ if(effect==='trip'){g.health=clamp(g.health+10);g.happy=clamp(g.happy+8)}
+ if(effect==='nutrition'){g.health=clamp(g.health+12);addAttribute('PHY',1)}
+ if(effect==='coach'){let key=({ST:'SHO',Winger:'DRI',CM:'PAS',CB:'DEF',GK:'REF'})[g.pos];addAttribute(key,2)}
+ if(effect==='massage'){g.energy=clamp(g.energy+12);g.health=clamp(g.health+5)}
+ if(SHOP_FX[effect])SHOP_FX[effect]();
+ log('🛍️ ซื้อ '+x[0]+' สำเร็จ');toast('ซื้อ '+x[0]+' สำเร็จ');render();renderShop();if(match&&match.current)drawMatchPanel();
+}
+function buyHome(tier){
+ const o=homeOptions[tier];if(!o||tier<= (g.homeTier||0))return;
+ if(g.money<o.price){toast('เงินไม่เพียงพอ');return}
+ g.money-=o.price;g.homeTier=tier;g.happy=clamp(g.happy+o.happy);log('🏠 ซื้อที่พัก: '+o.name+' สำเร็จ');render();
+}
+function buyCar(tier){
+ const o=carOptions[tier];if(!o||tier<= (g.carTier||0))return;
+ if(g.money<o.price){toast('เงินไม่เพียงพอ');return}
+ g.money-=o.price;g.carTier=tier;g.happy=clamp(g.happy+o.happy);log('🚗 ซื้อรถ: '+o.name+' สำเร็จ');render();
+}
+/* ===== V7: pixel avatar (varied skin/hair/style/build/kit, scales with age & height) ===== */
+function kitColors(){
+ if(g.pos==='GK')return{main:['#2fbf71','#e8b100','#ff6a3d','#7a5cff'][strHash(g.club||'k')%4],trim:'#101820',style:0};
+ if(g.age<6)return{main:'#4aa3df',trim:'#ffffff',style:0};
+ const pal=[['#d62839','#ffffff'],['#1f6fd1','#ffffff'],['#f2c230','#1b1b1b'],['#1d9a5a','#ffffff'],['#7a2fb8','#f5f5f5'],['#ef7d1a','#1b1b1b'],['#16212c','#e5e5e5'],['#2bb3c0','#0e2a30'],['#8c1d40','#f2c230'],['#e8e8e8','#d62839']];
+ const h=strHash(g.club||'x'),c=pal[h%pal.length];return{main:c[0],trim:c[1],style:(h>>3)%4};
+}
+function shadeHex(hex,amt){const n=parseInt(hex.slice(1),16);const r=clamp((n>>16)+amt,0,255),gg=clamp(((n>>8)&255)+amt,0,255),b=clamp((n&255)+amt,0,255);return'#'+((1<<24)|(r<<16)|(gg<<8)|b).toString(16).slice(1)}
+function drawAvatar(id){
+ const c=$(id||'avatarCanvas');if(!c||!g)return;const L=g.look||{};const W=40,H=56;
+ const o=document.createElement('canvas');o.width=W;o.height=H;const x=o.getContext('2d');
+ const R=(a,b,w,h,col)=>{x.fillStyle=col;x.fillRect(a,b,w,h)};
+ const skin=skinTones[(L.skin!=null?L.skin:1)],skinD=shadeHex(skin,-30),hb=hairColors[(L.hair!=null?L.hair:0)];
+ const hair=(g.age>=33&&((L.hair!=null?L.hair:0))<5)?shadeHex(hb,45+Math.min(40,(g.age-33)*6)):hb;
+ const kit=kitColors(),kd=shadeHex(kit.main,-35);
+ const tw=L.build==='broad'?22:L.build==='slim'?16:19,tx=Math.round(20-tw/2);
+ const gk=g.pos==='GK',style=L.style||'short';
+ // ขา ถุงเท้า รองเท้า
+ R(tx+2,38,5,8,skin);R(tx+tw-7,38,5,8,skin);
+ R(tx+2,45,5,6,kit.trim);R(tx+tw-7,45,5,6,kit.trim);R(tx+2,45,5,1,kit.main);R(tx+tw-7,45,5,1,kit.main);
+ R(tx+1,51,7,3,L.boots||'#111');R(tx+tw-8,51,7,3,L.boots||'#111');R(tx+1,53,7,1,'rgba(0,0,0,.35)');R(tx+tw-8,53,7,1,'rgba(0,0,0,.35)');
+ // ผมยาวชั้นหลัง
+ if(style==='long')R(11,6,18,17,hair);
+ // ลำตัวและแขน
+ R(tx-3,21,3,6,kit.main);R(tx+tw,21,3,6,kit.main);R(tx-3,27,3,6,skin);R(tx+tw,27,3,6,skin);
+ if(gk){R(tx-4,31,4,4,'#ffd23a');R(tx+tw,31,4,4,'#ffd23a')}else{R(tx-3,33,3,2,skin);R(tx+tw,33,3,2,skin)}
+ R(tx,20,tw,15,kit.main);
+ if(kit.style===1)for(let y=22;y<35;y+=4)R(tx,y,tw,2,kd);
+ if(kit.style===2)for(let xx=tx+2;xx<tx+tw;xx+=5)R(xx,20,2,15,kit.trim);
+ if(kit.style===3){for(let i=0;i<14;i++)R(tx+2+Math.round(i*(tw-6)/14),21+i,3,1,kit.trim)}
+ R(tx,34,tw,6,gk?'#101820':shadeHex(kit.main,-55));
+ R(tx,20,tw,1,shadeHex(kit.main,25));
+ // คอ + ปกเสื้อ
+ R(17,17,6,4,skinD);R(17,20,6,2,kit.trim);
+ // หัว
+ R(13,4,14,14,skin);x.clearRect(13,4,1,1);x.clearRect(26,4,1,1);x.clearRect(13,17,1,1);x.clearRect(26,17,1,1);
+ R(12,10,1,4,skin);R(27,10,1,4,skin);R(26,5,1,12,skinD);R(14,16,12,1,skinD);
+ // หน้า
+ R(16,10,3,2,'#fff');R(21,10,3,2,'#fff');R(17,10,2,2,eyeColors[L.eye||0]);R(22,10,2,2,eyeColors[L.eye||0]);
+ R(16,8,3,L.brow?2:1,hair);R(21,8,3,L.brow?2:1,hair);R(19,12,2,2,skinD);
+ // ทรงผม
+ const cap=()=>{R(13,3,14,4,hair);R(12,5,2,5,hair);R(26,5,2,5,hair)};
+ if(style==='short'||style==='long')cap();
+ if(style==='side'){cap();R(13,7,8,2,hair)}
+ if(style==='buzz'){x.globalAlpha=.8;R(13,4,14,3,hair);R(13,7,1,2,hair);R(26,7,1,2,hair);x.globalAlpha=1}
+ if(style==='spiky'){cap();for(let i=0;i<5;i++)R(14+i*3,1+(i%2),2,3,hair)}
+ if(style==='afro'){R(10,0,20,8,hair);R(9,3,3,9,hair);R(28,3,3,9,hair)}
+ if(style==='mohawk'){x.globalAlpha=.45;R(13,4,14,3,hair);x.globalAlpha=1;R(18,0,4,7,hair)}
+ if(style==='curly'){R(12,2,16,5,hair);R(12,5,2,5,hair);R(26,5,2,5,hair);R(13,1,3,2,hair);R(18,0,4,2,hair);R(24,1,3,2,hair)}
+ if(style==='bun'){cap();R(18,0,5,4,hair)}
+ if(style==='bald')R(16,4,6,1,'rgba(255,255,255,.28)');
+ // หนวด/เครา
+ if(L.facial==='stubble'){x.globalAlpha=.4;R(14,13,12,5,hair);x.globalAlpha=1}
+ if(L.facial==='beard'){R(13,12,2,6,hair);R(25,12,2,6,hair);R(13,16,14,2,hair);R(16,13,8,1,hair)}
+ if(L.facial==='moustache')R(16,13,8,1,hair);
+ // ปาก
+ R(18,15,4,1,'#8c3b3b');if(g.happy>=60){R(17,14,1,1,'#8c3b3b');R(22,14,1,1,'#8c3b3b')}
+ // วาดลงผืนผ้าใบหลัก ปรับสัดส่วนตามส่วนสูงจริงตามอายุ
+ const bm=bodyMetrics(),k=clamp(.42+.62*(bm.height/188),.5,1.06),S=Math.floor(c.width/W);
+ const cx=c.getContext('2d');cx.imageSmoothingEnabled=false;cx.clearRect(0,0,c.width,c.height);
+ const sw=W*S*k,sh=H*S*k,dx=(c.width-sw)/2,dy=c.height-sh-4;
+ cx.fillStyle='rgba(0,0,0,.32)';cx.beginPath();cx.ellipse(c.width/2,c.height-4,sw*.32,5,0,0,7);cx.fill();
+ cx.drawImage(o,0,0,W,H,dx,dy,sw,sh);
+}
+/* ===== V7: FIFA-style player card ===== */
+function cardTier(o){return o>=92?'legend':o>=85?'emerald':o>=75?'gold':o>=62?'silver':'bronze'}
+function statColor(v){return v<45?'#ff6a6a':v<60?'#ffa04d':v<72?'#ffd84d':v<84?'#a6e84d':'#43e08a'}
+function clubInitial(){const t=(g.club||'?').replace(/^[เแโใไ\s]+/,'');return[...t][0]||'⚽'}
+function cardHTML(suffix,size){
+ const a=g.attrs,o=ovr(),isGK=g.pos==='GK',names=isGK?goalkeeperNames:sixNames,keys=Object.keys(names),kit=kitColors();
+ const info=countryInfo[g.country]||{flag:'🏳️'};
+ const col=i=>keys.slice(i*3,i*3+3).map(k=>`<div><b>${Math.round(a[k])}</b><span>${names[k]}</span></div>`).join('');
+ return `<div class="fcard tier-${cardTier(o)} ${size||''}"><div class="fc-shine"></div><div class="fc-top"><div class="fc-left"><div class="fc-ovr">${o}</div><div class="fc-pos">${g.pos}</div><div class="fc-flag" title="${g.country}">${info.flag}</div><div class="fc-badge" style="background:${kit.main};color:${kit.trim}">${clubInitial()}</div></div><div class="fc-avatar"><canvas id="avatar${suffix}" width="120" height="168"></canvas></div></div><div class="fc-name">${g.name}</div><div class="fc-line"></div><div class="fc-stats"><div class="fc-col">${col(0)}</div><div class="fc-div"></div><div class="fc-col">${col(1)}</div></div><div class="fc-foot">#${g.num} • ${g.archName||posNames[g.pos]}</div></div>`;
+}
+function marketValue(){const o=ovr(),af=g.age<=21?1.25:g.age<=27?1:g.age<=31?.7:.4;return Math.round(Math.pow(o/100,6)*3.5e8*af/10000)*10000}
+function potentialInfo(){const p=g.pot||75,stars=clamp(Math.round((p-60)/37*5),1,5),label=p>=90?'ระดับตำนาน':p>=84?'ระดับโลก':p>=78?'ดาวเด่น':p>=70?'นักเตะอาชีพคุณภาพ':'ผู้เล่นทั่วไป';let s='';for(let i=1;i<=5;i++)s+=stars>=i?'★':'☆';return{stars:s,label,lo:p-3,hi:Math.min(99,p+3)}}
+function profileHTML(){
+ const a=g.attrs,o=ovr(),b=bodyMetrics(),pi=potentialInfo(),isGK=g.pos==='GK',names=isGK?goalkeeperNames:sixNames,wf='★'.repeat(g.weakFoot||1)+'☆'.repeat(5-(g.weakFoot||1)),bmi=(b.weight/Math.pow(b.height/100,2)).toFixed(1);
+ const bars=Object.keys(names).map(k=>`<div class="pbar"><span class="pbl">${names[k]}</span><div class="pbt"><i style="width:${clamp(a[k])}%;background:${statColor(a[k])}"></i></div><b>${Math.round(a[k])}</b></div>`).join('');
+ const row=(l,v)=>`<div class="irow"><span>${l}</span><b>${v}</b></div>`;
+ return `<div class="profile-grid"><div class="profile-card">${cardHTML('Big','big')}</div><div class="profile-info"><div class="panel2"><h3>ข้อมูลทั่วไป</h3>${row('ชื่อ',g.name)}${row('สัญชาติ',((countryInfo[g.country]||{}).flag||'')+' '+g.country)}${row('อายุ / ปีเกิด',g.age+' ปี / '+g.birth)}${row('ตำแหน่ง',g.pos+' • '+posNames[g.pos])}${row('สไตล์การเล่น',g.archName||'-')}${row('สโมสร',g.club)}${row('ลีก',g.league)}${row('เบอร์เสื้อ','#'+g.num)}</div><div class="panel2"><h3>ร่างกาย & เท้า</h3>${row('ส่วนสูง',b.height+' ซม.')}${row('น้ำหนัก',b.weight+' กก. (BMI '+bmi+')')}${row('ส่วนสูงเมื่อโตเต็มที่ (แมวมองประเมิน)','~'+g.adultHeight+' ซม.')}${row('เท้าถนัด',g.strongFoot)}${row('เท้าข้างไม่ถนัด','<span style="color:var(--gold)">'+wf+'</span>')}</div><div class="panel2"><h3>ค่าพลังและศักยภาพ</h3><div class="pbars">${bars}</div>${row('OVR ปัจจุบัน',o)}${row('ศักยภาพ (ประเมิน)',pi.stars+' • '+pi.label)}${row('ช่วง OVR สูงสุดที่คาดไว้','~'+pi.lo+' – '+pi.hi)}${row('มูลค่าตลาด',money(marketValue()))}</div><div class="panel2"><h3>ผลงานอาชีพ</h3>${row('ลงสนาม',g.stats.apps)}${row('ประตู',g.stats.goals)}${row('แอสซิสต์',g.stats.assists)}${row('คลีนชีต',g.stats.clean)}${row('แชมป์',g.stats.trophies)}${row('รางวัลส่วนตัว',g.stats.awards.length)}</div></div></div>`;
+}
+function renderCard(){
+ const b=bodyMetrics();
+ $('playerCard').innerHTML=cardHTML('Mini','mini')+`<div class="training-option" style="margin-top:9px"><b>ข้อมูลร่างกาย</b><p>อายุ ${g.age} ปี • ${b.height} ซม. • ${b.weight} กก.</p><p>เท้าถนัด ${g.strongFoot||'ขวา'} • เท้าไม่ถนัด <span style="color:var(--gold)">${'★'.repeat(g.weakFoot||1)}${'☆'.repeat(5-(g.weakFoot||1))}</span></p><p>สุขภาพ ${g.health}/100 • ความสุข ${g.happy}/100 • ความฟิต ${g.energy}/100</p></div>`;
+ drawAvatar('avatarMini');
+ if($('profileBody')){$('profileBody').innerHTML=profileHTML();drawAvatar('avatarBig')}
+}
+function clubsDirectoryHTML(){return leagues.map(league=>`<div class="training-option"><b>${league} <span class="pill">${clubs[league].length} สโมสร</span></b><p>${clubs[league].join(' • ')}</p></div>`).join('')}
+function awardsHTML(){
+ const history=g.stats.awardHistory||[];
+ const gold=history.filter(a=>a.type==='gold').sort((a,b)=>b.year-a.year);
+ const silver=history.filter(a=>a.type!=='gold').sort((a,b)=>b.year-a.year);
+ const silverTitles=[...new Set(silver.map(a=>a.title))];
+ const card=a=>`<div class="award-card ${a.type==='gold'?'award-gold':'award-silver'}"><div class="award-icon">${a.type==='gold'?'🏆':'🏅'}</div><h3>${a.title}</h3><div class="award-year">ฤดูกาล ${a.year} • อายุ ${a.age}</div><p class="muted">${g.name} • ${g.club}</p></div>`;
+ const silverSections=silverTitles.length?silverTitles.map(title=>{
+   const entries=silver.filter(a=>a.title===title);
+   return `<section class="panel award-silver"><div class="eyebrow">SILVER HONOURS • ${entries.length} TIME${entries.length===1?'':'S'}</div><h2>🥈 ${title}</h2><div class="award-grid">${entries.map(card).join('')}</div></section>`;
+ }).join(''):'<section class="panel award-silver"><h2>🥈 รางวัลผู้เล่นยอดเยี่ยม</h2><p class="muted">ยังไม่มีรางวัลในหมวดนี้ ลุยต่อเพื่อสร้างประวัติศาสตร์!</p></section>';
+ const goldSection=`<section class="panel award-gold"><div class="eyebrow">THE GOLDEN BALL</div><h2>🏆 บัลลงดอร์</h2><p class="muted">แกลเลอรีรางวัลสีทอง แยกจากรางวัลประเภทอื่น</p><div class="award-grid">${gold.length?gold.map(card).join(''):'<p class="muted">ยังไม่ได้รับรางวัลบัลลงดอร์</p>'}</div></section>`;
+ return silverSections+goldSection;
+}
+function render(){if(!g)return;$('hAge').textContent=g.age+' ปี • '+g.year;$('hClub').textContent=g.club;$('hOvr').textContent=ovr();$('hMoney').textContent=money(g.money);$('hEnergy').textContent=g.energy+'/100';$('seasonTitle').textContent='ฤดูกาล '+g.year+' • อายุ '+g.age;$('clubLine').textContent=g.club+' • '+g.league;$('phase').textContent=g.age<=15?'วัยเยาว์':'นักฟุตบอลอาชีพ';renderCard();if($('awardsBody'))$('awardsBody').innerHTML=awardsHTML();$('lifeStats').innerHTML=`<div>สุขภาพ <b>${g.health}/100</b><div class="bar"><span style="width:${g.health}%"></span></div></div><div>พลังงาน <b>${g.energy}/100</b><div class="bar"><span style="width:${g.energy}%"></span></div></div><div>ความสุข <b>${g.happy}/100</b><div class="bar"><span style="width:${g.happy}%"></span></div></div><p class="muted">สัญญา/ความสัมพันธ์: ${g.relationship}<br>แผนฝึก: ${{balanced:'สมดุล',position:'เน้นตำแหน่ง',technical:'เน้นเทคนิค',physical:'เน้นร่างกาย',light:'ฝึกเบามาก'}[g.training]}</p>`;$('trainingOptions').innerHTML=trainingHTML();renderShop();$('clubsBody').innerHTML=clubsDirectoryHTML();$('recordsBody').innerHTML=`<div class="fields"><div>ลงสนาม <b>${g.stats.apps}</b></div><div>ประตู <b>${g.stats.goals}</b></div><div>แอสซิสต์ <b>${g.stats.assists}</b></div><div>คลีนชีต <b>${g.stats.clean}</b></div><div>🟨 ใบเหลือง <b>${g.stats.yellow||0}</b></div><div>🟥 ใบแดง <b>${g.stats.red||0}</b></div><div>แชมป์ <b>${g.stats.trophies}</b></div><div>รางวัล <b>${g.stats.awards.length}</b></div></div>${clubHistoryHTML()}<h3>รางวัลส่วนตัว</h3>${g.stats.awards.map(a=>'<span class="pill">'+a+'</span>').join('')||'<span class="muted">ยังไม่มี</span>'}<h3>ประวัติ</h3>${g.history.slice().reverse().map(h=>`<p>${h.year} • อายุ ${h.age} • ${h.club} • ${h.note}</p>`).join('')}`}
+function retire(auto){if(!g||g.retired)return;g.retired=true;running=false;let score=g.stats.goals*2+g.stats.assists+g.stats.trophies*15+g.stats.awards.length*10+ovr();let end=score>500?'GOAT: ตำนานลบล้างทุกสถิติโลก':score>220?'นักเตะอาชีพโปรไฟล์ดีระดับมาตรฐาน':'อดีตดาวรุ่งที่ไปไม่ถึงฝัน';$('eventArea').innerHTML=`<div class="event"><h2>🏁 ${auto?'อายุครบ 40 ปี':'ประกาศแขวนสตั๊ด'}</h2><h3 style="color:var(--gold)">${end}</h3><p>${g.name} ปิดฉากอาชีพในวัย ${g.age} ปี</p><p>ลงสนาม ${g.stats.apps} • ประตู ${g.stats.goals} • แอสซิสต์ ${g.stats.assists} • คลีนชีต ${g.stats.clean} • แชมป์ ${g.stats.trophies}</p></div>`;$('matchArea').innerHTML='';match=null;render();updateClock();log('🏁 '+g.name+' แขวนสตั๊ดแล้ว')}
+function saveGame(){if(!g)return;let data={g,elapsed,speed,running,transferOffers:window.transferOffers||[]};localStorage.setItem('becomeLegendSave7',JSON.stringify(data));localStorage.setItem('becomeLegendSave6',JSON.stringify(data));localStorage.setItem('becomeLegendSave4',JSON.stringify(data));log('💾 บันทึกเกมแล้ว')}
+function loadGame(){let s=localStorage.getItem('becomeLegendSave7')||localStorage.getItem('becomeLegendSave6')||localStorage.getItem('becomeLegendSave4')||localStorage.getItem('becomeLegendSave2');if(!s){alert('ไม่พบเซฟเกมเวอร์ชันนี้ (V4)');return}try{let d=JSON.parse(s);g=d.g;g.attrs=g.attrs||{};['DIV','HAN','KIC','REF','SPD','POS'].forEach(k=>{if(g.attrs[k]==null)g.attrs[k]=55});g.midYearDoneYear=g.midYearDoneYear||0;g.shopCooldown=g.shopCooldown||{};g.homeTier=g.homeTier||0;g.carTier=g.carTier||0;g.adultHeight=g.adultHeight||rand(g.pos==='GK'?182:168,g.pos==='GK'?198:190);g.adultWeight=g.adultWeight||Math.round((g.adultHeight/100)**2*rand(205,235)/10);g.strongFoot=g.strongFoot||pick(['ขวา','ซ้าย']);g.weakFoot=g.weakFoot||rand(1,5);g.weakFootXp=g.weakFootXp||0;g.stats.form=g.stats.form||0;g.stats.awards=g.stats.awards||[];g.stats.awardHistory=g.stats.awardHistory||g.stats.awards.map(title=>({year:g.year,age:g.age,title,type:title.includes('บัลลงดอร์')||title.includes('Ballon')?'gold':'silver'}));migrateSave();window.transferOffers=d.transferOffers||[];elapsed=d.elapsed||0;speed=d.speed||1;running=false;clearInterval(timer);timer=setInterval(tick,100);$('create').classList.add('hidden');$('heroBox').classList.add('hidden');$('game').classList.remove('hidden');$('hud').style.display='grid';$('news').innerHTML='';log('📂 โหลดเกมสำเร็จ (เริ่มต้นในสถานะหยุดเวลา)');render();setSpeedButtons();updateClock()}catch(e){alert('เซฟเกมเสียหาย')}}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.tabbody').forEach(x=>x.classList.toggle('hidden',x.id!==b.dataset.tab))}));
+
+try{var _j=document.getElementById('jsOk');if(_j){_j.textContent='✅ เกมพร้อมเล่น — กรอกข้อมูลแล้วกดเริ่มได้เลย';_j.style.color='#6df0ae'}}catch(e){}
+</script></body></html>
